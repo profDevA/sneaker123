@@ -1,0 +1,206 @@
+body {
+    background-color: #fff;
+    font-family: "Montserrat";
+}
+
+{% comment %} Marqueee {% endcomment %}
+.track-vertical {
+  position: absolute;
+  white-space: nowrap;
+  will-change: transform;
+  animation: marquee-vertical 20s linear infinite;
+  /* manipulate the speed of the marquee by changing "20s" line above*/
+}
+@keyframes marquee-vertical {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+.track-vertical-alt{
+  position: absolute;
+  white-space: nowrap;
+  will-change: transform;
+  animation: marquee-vertical-alt 20s linear infinite;
+  /* manipulate the speed of the marquee by changing "20s" line above*/
+}
+@keyframes marquee-vertical-alt {
+  from { transform: translateY(-50%); }
+  to { transform: translateY(0%); }
+}
+
+#section-header .search-button {
+  background: url({{ 'magnifying-glass.svg' | asset_url }}) no-repeat 50% 50%/20px 20px;
+  padding: 9px 15px;
+}
+
+#section-header {
+  box-shadow: 14px 14px 40px 0 rgba(118, 126, 173, 0.08);
+
+  .Header__Wrapper {
+    max-width: 1140px;
+    padding-right: 0;
+    padding-left: 0;
+    margin: 0 auto;
+
+    @media screen and (max-width: 1200px) {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+
+    .Header__FlexItem {
+      &.Header__FlexItem--logo {
+        .Header__Logo {
+          margin-top: 0;
+        }
+      }
+
+      .Header__MainNav {
+        .HorizontalList {
+          .HorizontalList__Item {
+            margin-left: 8px;
+            margin-right: 8px;
+
+            .u-h6 {
+              font-size: 14px;
+              text-transform: none;
+              letter-spacing: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+#shopify-section-16115986031671afeb {
+  .section-standard.hero.lp-template {
+    /* min-height: 0; */
+
+    @media screen and (max-width: 992px) {
+      padding-top: 110px;
+    }
+    .col.small {
+      @media screen and (max-width: 992px) {
+        width: 100%;
+      }
+    }
+
+    .flex-horizontal.flip-svp {
+      @media screen and (max-width: 992px) {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
+      }
+    }
+  }
+}
+
+#shopify-section-16116345427d17df4c {
+  .c07_icon_wrap {
+    .c07_column {
+      padding-right: 15px;
+      padding-left: 15px; 
+      text-align: center;
+
+      .c07_paragraph {
+        margin: 0 auto;
+      }
+    }
+  }
+}
+
+#shopify-section-1611653809922fac47 {
+  .section-4 {
+    min-height: 0;
+  }
+}
+
+#shopify-section-1611654401efe0f40f {
+  .section-cta {
+    padding: 0 5vw;
+    margin-bottom: 60px;
+
+    .cta-row {
+      background-color: #e99443;
+      background-image: linear-gradient(180deg, #f6902a, #f6902a);
+      border-radius: 15px;
+      display: flex;
+      overflow: hidden;
+      justify-content: space-between;
+      align-items: center;
+      padding-right: 50px;
+
+      @media screen and (max-width: 768px) {
+        display: block;
+        padding-right: 0;
+        text-align: center;
+      }
+
+      .cta-text {
+        h6 {
+          max-width: 500px;
+          font-size: 38px;
+          line-height: 45px;
+          color: #000;
+
+          @media screen and (max-width: 768px) {
+            margin: 10px auto 30px;
+            font-size: 32px;
+          }
+        }
+      }
+
+      .cta-button {
+        .w-button {
+          width: 200px;
+          padding: 15px 25px;
+          border-radius: 6px;
+          background-color: #fff;
+          box-shadow: 14px 14px 40px 0 rgba(118, 126, 173, 0.08);
+          color: #f6902a;
+          font-size: 14px;
+          font-weight: 500;
+          text-align: center;
+          letter-spacing: 1px;
+
+          @media screen and (max-width: 768px) {
+            margin-bottom: 30px;
+          }
+        }
+      }
+    }
+  }
+}
+
+#section-footer {
+  min-height: 400px;
+  padding: 90px 5% 40px;
+  background-color: #1d1d1d;
+  color: rgba(235, 236, 240, 0.74);
+
+  .Container {
+    .Footer__Inner {
+      .Footer__Block {
+        .Footer__Title {
+          color: #fff;
+        }
+      }
+    }
+
+    .Footer__Aside {
+      .Footer__Copyright {
+        .Footer__StoreName {
+          color: hsla(0, 0%, 100%, 0.5);
+        }
+      }
+    }
+  }
+
+
+
+  .f12_button {
+    background: #f6902C;
+  }
+}

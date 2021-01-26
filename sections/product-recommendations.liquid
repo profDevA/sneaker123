@@ -1,0 +1,113 @@
+{%- capture section_settings -%}
+{
+  "productId": {{ product.id | json }},
+  "useRecommendations": {% if product.metafields.sf_related_products.enabled == 1 %}false{% else %}true{% endif %},
+  "recommendationsCount": 4
+}
+{%- endcapture -%}
+
+{%- capture flickity_options -%}
+{
+  "prevNextButtons": true,
+  "pageDots": false,
+  "wrapAround": false,
+  "contain": true,
+  "cellAlign": "center",
+  "watchCSS": true,
+  "dragThreshold": 8,
+  "groupCells": true,
+  "arrowShape": {"x0": 20, "x1": 60, "y1": 40, "x2": 60, "y2": 35, "x3": 25}
+}
+{%- endcapture -%}
+
+{%- if section.settings.show_product_recommendations -%}
+  <section class="Section Section--spacingNormal" data-section-id="{{ section.id }}" data-section-type="product-recommendations" data-section-settings='{{ section_settings }}'>
+    {%- if section.settings.heading != blank -%}
+      <header class="SectionHeader SectionHeader--center">
+        <div class="Container">
+          <h3 class="SectionHeader__Heading Heading u-h3">{{ section.settings.heading | escape }}</h3>
+        </div>
+      </header>
+    {%- endif -%}
+
+    <div class="ProductRecommendations">
+      {%- if recommendations.performed or product.metafields.sf_related_products.enabled == 1 -%}
+        <div class="ProductListWrapper">
+          <div class="ProductList ProductList--carousel Carousel" data-flickity-config='{{ flickity_options }}'>
+            {%- comment -%}
+            If the merchant is explicitly using SuperFields, we use the hand-picked related products, otherwise we
+            switch to the Shopify automatic recommendation
+            {%- endcomment -%}
+
+            {%- if product.metafields.sf_related_products.enabled == 1 -%}
+              {%- for i in (1..4) -%}
+                {%- assign related_product_option = 'product_' | append: i -%}
+                {%- assign related_product = all_products[product.metafields.sf_related_products[related_product_option]] -%}
+
+                {%- unless related_product.empty? -%}
+                  <div class="Carousel__Cell">
+                    {% render 'product-item', product: related_product, show_product_info: section.settings.show_product_info, show_vendor: section.settings.show_vendor, show_color_swatch: section.settings.show_color_swatch, show_labels: true %}
+                  </div>
+                {%- endunless -%}
+              {%- endfor -%}
+            {%- else -%}
+              {%- for product in recommendations.products -%}
+                <div class="Carousel__Cell">
+                  {% render 'product-item', product: product, show_product_info: section.settings.show_product_info, show_vendor: section.settings.show_vendor, show_color_swatch: section.settings.show_color_swatch, show_labels: true %}
+                </div>
+              {%- else -%}
+                {%- comment -%}Hide the section if there is no recommendations to show{%- endcomment -%}
+                <style>
+                  #shopify-section-{{ section.id }} {
+                    display: none;
+                  }
+                </style>
+              {%- endfor -%}
+            {%- endif -%}
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Product recommendations",
+  "class": "shopify-section--bordered",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_product_recommendations",
+      "label": "Show dynamic recommendations",
+      "info": "Dynamic recommendations change and improve with time. [Learn more](https://help.shopify.com/en/themes/development/recommended-products)",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "You may also like"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_product_info",
+      "label": "Show product info",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Show vendor",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_color_swatch",
+      "label": "Show color swatch",
+      "info": "Some colors appear white? [Learn more](http://support.maestrooo.com/article/80-product-uploading-custom-color-for-color-swatch).",
+      "default": false
+    }
+  ]
+}
+{% endschema %}

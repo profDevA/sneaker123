@@ -1,0 +1,725 @@
+{%- comment -%}
+In Prestige, the header is quite complex due to the very high number of possible combinations. If you have to edit it, please
+make sure to duplicate the theme first so you can revert your changes in case any issue is introduced.
+{%- endcomment -%}
+
+{%- comment -%}
+--------------------------------------------------------------------------------------------------------------------
+USEFUL VARIABLES
+--------------------------------------------------------------------------------------------------------------------
+{%- endcomment -%}
+
+{%- assign use_transparent_header = false -%}
+
+{%- if template == 'index' and section.settings.enable_transparent_header -%}
+  {%- assign use_transparent_header = true -%}
+{%- endif -%}
+
+{%- if template.name == 'collection' and section.settings.enable_transparent_header_collection and collection.image and collection.all_products_count > 0 and collection.template_suffix != 'no-image' -%}
+  {%- assign use_transparent_header = true -%}
+{%- endif -%}
+
+{%- if section.settings.navigation_style != 'sidebar' -%}
+  {%- assign use_sidebar_menu = false -%}
+{%- else -%}
+  {%- assign use_sidebar_menu = true -%}
+{%- endif -%}
+
+{%- comment -%}
+--------------------------------------------------------------------------------------------------------------------
+CURRENCY AND LANGUAGE SELECTORS
+--------------------------------------------------------------------------------------------------------------------
+{%- endcomment -%}
+
+{%- if section.settings.show_currency_selector and shop.enabled_currencies.size > 1 -%}
+  {%- assign currency_selector = true -%}
+{%- endif -%}
+
+{%- if section.settings.show_locale_selector and shop.published_locales.size > 1 -%}
+  {%- assign locale_selector = true -%}
+{%- endif -%}
+
+{%- if locale_selector or currency_selector -%}
+  {%- capture localization_form -%}
+    {%- form 'localization', id: 'localization_form_header', class: 'Header__LocalizationForm hidden-pocket hidden-lap' -%}
+      <div class="HorizontalList HorizontalList--spacingLoose">
+        {%- if currency_selector -%}
+          <div class="HorizontalList__Item">
+            <input type="hidden" name="currency_code" value="{{ form.current_currency.iso_code }}">
+            <span class="u-visually-hidden">{{ 'header.general.currency' | t }}</span>
+
+            <button type="button" class="SelectButton Link Link--primary u-h8" aria-haspopup="true" aria-expanded="false" aria-controls="header-currency-popover">
+              {{ form.current_currency.iso_code }} {% if form.current_currency.symbol %}{{ form.current_currency.symbol }}{% endif %}
+              {%- render 'icon', icon: 'select-arrow' -%}
+            </button>
+
+            <div id="header-currency-popover" class="Popover Popover--small Popover--noWrap" aria-hidden="true">
+              <header class="Popover__Header">
+                <button type="button" class="Popover__Close Icon-Wrapper--clickable" data-action="close-popover">{% render 'icon' with 'close' %}</button>
+                <span class="Popover__Title Heading u-h4">{{ 'header.general.currency' | t }}</span>
+              </header>
+
+              <div class="Popover__Content">
+                <div class="Popover__ValueList Popover__ValueList--center" data-scrollable>
+                  {%- for currency in form.available_currencies -%}
+                    <button type="submit" name="currency_code" class="Popover__Value {% if currency.iso_code == form.current_currency.iso_code %}is-selected{% endif %} Heading Link Link--primary u-h6"  value="{{ currency.iso_code }}" {% if currency.iso_code == form.current_currency.iso_code %}aria-current="true"{% endif %}>
+                      {{ currency.iso_code }} {% if currency.symbol %}{{ currency.symbol }}{% endif %}
+                    </button>
+                  {%- endfor -%}
+                </div>
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+
+        {%- if locale_selector -%}
+          <div class="HorizontalList__Item">
+            <input type="hidden" name="locale_code" value="{{ form.current_locale.iso_code }}">
+            <span class="u-visually-hidden">{{ 'header.general.locale' | t }}</span>
+
+            <button type="button" class="SelectButton Link Link--primary u-h8" aria-haspopup="true" aria-expanded="false" aria-controls="header-locale-popover">
+              {{- form.current_locale.endonym_name -}}
+              {%- render 'icon', icon: 'select-arrow' -%}
+            </button>
+
+            <div id="header-locale-popover" class="Popover Popover--small Popover--noWrap" aria-hidden="true">
+              <header class="Popover__Header">
+                <button type="button" class="Popover__Close Icon-Wrapper--clickable" data-action="close-popover">{% render 'icon' with 'close' %}</button>
+                <span class="Popover__Title Heading u-h4">{{ 'header.general.locale' | t }}</span>
+              </header>
+
+              <div class="Popover__Content">
+                <div class="Popover__ValueList Popover__ValueList--center" data-scrollable>
+                  {%- for locale in form.available_locales -%}
+                    <button type="submit" name="locale_code" class="Popover__Value {% if locale.iso_code == form.current_locale.iso_code %}is-selected{% endif %} Heading Link Link--primary u-h6" value="{{ locale.iso_code }}" {% if locale.iso_code == form.current_locale.iso_code %}aria-current="true"{% endif %}>
+                      {{- locale.endonym_name -}}
+                    </button>
+                  {%- endfor -%}
+                </div>
+              </div>
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endform -%}
+  {%- endcapture -%}
+{%- endif -%}
+
+{%- comment -%}
+--------------------------------------------------------------------------------------------------------------------
+SEARCH FORM (implemented as a modal)
+
+Implementation note: make sure that the Search div is always just before the Header element, as the CSS uses
+                     this assumption
+--------------------------------------------------------------------------------------------------------------------
+{%- endcomment -%}
+
+<div id="Search" class="Search" aria-hidden="true">
+  <div class="Search__Inner">
+    <div class="Search__SearchBar">
+      <form action="{{ routes.search_url }}" name="GET" role="search" class="Search__Form">
+        <div class="Search__InputIconWrapper">
+          <span class="hidden-tablet-and-up">{%- render 'icon' with 'search' -%}</span>
+          <span class="hidden-phone">{%- render 'icon' with 'search-desktop' -%}</span>
+        </div>
+
+        <input type="search" class="Search__Input Heading" name="q" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="{{ 'search.general.input_placeholder' | t }}" placeholder="{{ 'search.general.input_placeholder' | t }}" autofocus>
+        <input type="hidden" name="type" value="product">
+      </form>
+
+      <button class="Search__Close Link Link--primary" data-action="close-search" aria-label="{{ 'header.navigation.close_search' | t }}">{% render 'icon' with 'close' %}</button>
+    </div>
+
+    <div class="Search__Results" aria-hidden="true">
+      {%- if settings.search_mode != 'product' -%}
+        <div class="PageLayout PageLayout--breakLap">
+          <div class="PageLayout__Section"></div>
+          <div class="PageLayout__Section PageLayout__Section--secondary"></div>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{%- comment -%}
+--------------------------------------------------------------------------------------------------------------------
+HEADER CONTENT
+--------------------------------------------------------------------------------------------------------------------
+{%- endcomment -%}
+
+{%- capture section_settings -%}
+{
+  "navigationStyle": {{ section.settings.navigation_style | json }},
+  "hasTransparentHeader": {% if use_transparent_header %}true{% else %}false{% endif %},
+  "isSticky": {% if section.settings.use_sticky_header %}true{% else %}false{% endif %}
+}
+{%- endcapture -%}
+
+<header id="section-{{ section.id }}"
+        class="Header Header--{{ section.settings.navigation_style }} {% if section.settings.navigation_style != 'inline' and section.settings.navigation_style != 'logoLeft' %}Header--initialized{% endif %} {% if use_transparent_header %}Header--transparent{% endif %} {% if section.settings.show_icons or section.settings.navigation_style == 'sidebar' %}Header--withIcons{% endif %}"
+        data-section-id="{{ section.id }}"
+        data-section-type="header"
+        data-section-settings='{{ section_settings }}'
+        role="banner">
+  <div class="Header__Wrapper">
+    <div class="Header__FlexItem Header__FlexItem--fill">
+      <button class="Header__Icon Icon-Wrapper Icon-Wrapper--clickable {% unless use_sidebar_menu %}hidden-desk{% endunless %}" aria-expanded="false" data-action="open-drawer" data-drawer-id="sidebar-menu" aria-label="{{ 'header.navigation.open_sidebar' | t }}">
+        <span class="hidden-tablet-and-up">{%- render 'icon' with 'nav' -%}</span>
+        <span class="hidden-phone">{%- render 'icon' with 'nav-desktop' -%}</span>
+      </button>
+
+      {%- comment -%}
+      --------------------------------------------------------------------------------------------------------------------
+      DESKTOP NAVIGATION (if not using the sidebar mode)
+      --------------------------------------------------------------------------------------------------------------------
+      {%- endcomment -%}
+
+      {%- unless use_sidebar_menu -%}
+        {%- assign main_menu_handle = section.settings.navigation_menu | default: 'main-menu' -%}
+        {%- assign main_menu = linklists[main_menu_handle] -%}
+
+        {%- assign mega_menu_names = '' -%}
+
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'mega_menu' -%}
+            {%- assign trim_mega_menu_name = block.settings.navigation_mega_menu | strip -%}
+            {%- assign mega_menu_names = mega_menu_names | append: trim_mega_menu_name | append: ',' -%}
+          {%- endif -%}
+        {%- endfor -%}
+
+        {%- assign mega_menu_names = mega_menu_names | downcase | split: ',' | compact -%}
+
+        <nav class="Header__MainNav hidden-pocket hidden-lap" aria-label="{{ 'header.navigation.title' | t }}">
+          <ul class="HorizontalList HorizontalList--spacingExtraLoose">
+            {%- for link in main_menu.links -%}
+              {%- assign downcased_link_title = link.title | downcase | strip -%}
+              {%- assign use_mega_menu = false -%}
+
+              {%- capture menu_item_dropdown -%}
+                {%- if mega_menu_names contains downcased_link_title -%}
+                  {%- for block in section.blocks -%}
+                    {%- assign downcased_mega_menu_name = block.settings.navigation_mega_menu | downcase -%}
+
+                    {%- if downcased_mega_menu_name != downcased_link_title -%}
+                      {%- continue -%}
+                    {%- endif -%}
+
+                    {%- assign use_mega_menu = true -%}
+                    {%- assign push_image_count = 0 -%}
+
+                    {%- if block.settings.push_1_image -%}
+                      {%- assign push_image_count = push_image_count | plus: 1 -%}
+                    {%- endif -%}
+
+                    {%- if block.settings.push_2_image -%}
+                      {%- assign push_image_count = push_image_count | plus: 1 -%}
+                    {%- endif -%}
+
+                    {%- assign should_space_evenly = false -%}
+
+                    {%- if push_image_count == 0 and link.links.size <= 3 -%}
+                      {%- assign should_space_evenly = true -%}
+                    {%- endif -%}
+
+                    {%- if push_image_count == 1 and link.links.size == 1 -%}
+                      {%- assign should_space_evenly = true -%}
+                    {%- endif -%}
+
+                    {%- if push_image_count == 2 and link.links.size == 1 -%}
+                      {%- assign should_space_evenly = true -%}
+                    {%- endif -%}
+
+                    <div class="MegaMenu {% if push_image_count != 0 and link.links.size == 0 %}MegaMenu--spacingCenter{% elsif should_space_evenly %}MegaMenu--spacingEvenly{% endif %} {% if push_image_count == 0 and link.links.size > 4 %}MegaMenu--grid{% endif %}" aria-hidden="true" {{ block.shopify_attributes }}>
+                      <div class="MegaMenu__Inner">
+                        {%- for sub_link in link.links -%}
+                          <div class="MegaMenu__Item MegaMenu__Item--fit">
+                            <a href="{{ sub_link.url }}" class="MegaMenu__Title Heading Text--subdued u-h7">{{ sub_link.title | title }}</a>
+
+                            {%- if sub_link.links != blank -%}
+                              <ul class="Linklist">
+                                {%- for sub_sub_link in sub_link.links -%}
+                                  <li class="Linklist__Item">
+                                    <a href="{{ sub_sub_link.url }}" class="Link Link--secondary">{{ sub_sub_link.title | escape }}</a>
+                                  </li>
+                                {%- endfor -%}
+                              </ul>
+                            {%- endif -%}
+                          </div>
+                        {%- endfor -%}
+
+                        {%- if push_image_count > 0 -%}
+                          <div class="MegaMenu__Item" style="{% if push_image_count == 1 %}width: 370px; min-width: 250px;{% else %}width: 660px; min-width: 425px;{% endif %}">
+                            {%- if block.settings.push_1_image -%}
+                              <div class="MegaMenu__Push {% if push_image_count == 2 %}MegaMenu__Push--shrink{% endif %}">
+                                {%- if block.settings.push_1_url != blank -%}
+                                  <a class="MegaMenu__PushLink" href="{{ block.settings.push_1_url }}">
+                                {%- endif -%}
+
+                                {%- assign max_width = 370 | at_most: block.settings.push_1_image.width -%}
+
+                                <div class="MegaMenu__PushImageWrapper AspectRatio" style="background: url({{ block.settings.push_1_image | img_url: '1x1', format: 'jpg' }}); max-width: {{ max_width }}px; --aspect-ratio: {{ block.settings.push_1_image.aspect_ratio }}">
+                                  <img class="Image--lazyLoad Image--fadeIn"
+                                       data-src="{{ block.settings.push_1_image | img_url: '370x230', scale: 2 }}"
+                                       alt="{{ block.settings.push_1_image.alt | escape }}">
+
+                                  <span class="Image__Loader"></span>
+                                </div>
+
+                                {%- if block.settings.push_1_heading != blank -%}
+                                  <p class="MegaMenu__PushHeading Heading u-h6">{{ block.settings.push_1_heading | escape }}</p>
+                                {%- endif -%}
+
+                                {%- if block.settings.push_1_subheading != blank -%}
+                                  <p class="MegaMenu__PushSubHeading Heading Text--subdued u-h7">{{ block.settings.push_1_subheading | escape }}</p>
+                                {%- endif -%}
+
+                                {%- if block.settings.push_1_url != blank -%}
+                                  </a>
+                                {%- endif -%}
+                              </div>
+                            {%- endif -%}
+
+                            {%- if block.settings.push_2_image -%}
+                              <div class="MegaMenu__Push {% if push_image_count == 2 %}MegaMenu__Push--shrink{% endif %}">
+                                {%- if block.settings.push_2_url != blank -%}
+                                  <a class="MegaMenu__PushLink" href="{{ block.settings.push_2_url }}">
+                                {%- endif -%}
+
+                                {%- assign max_width = 370 | at_most: block.settings.push_2_image.width -%}
+
+                                <div class="MegaMenu__PushImageWrapper AspectRatio" style="background: url({{ block.settings.push_2_image | img_url: '1x1', format: 'jpg' }}); max-width: {{ max_width }}px; --aspect-ratio: {{ block.settings.push_2_image.aspect_ratio }}">
+                                  <img class="Image--lazyLoad Image--fadeIn"
+                                       data-src="{{ block.settings.push_2_image | img_url: '370x230', scale: 2 }}"
+                                       alt="{{ block.settings.push_2_image.alt | escape }}">
+
+                                  <span class="Image__Loader"></span>
+                                </div>
+
+                                {%- if block.settings.push_2_heading != blank -%}
+                                  <p class="MegaMenu__PushHeading Heading u-h6">{{ block.settings.push_2_heading | escape }}</p>
+                                {%- endif -%}
+
+                                {%- if block.settings.push_2_subheading != blank -%}
+                                  <p class="MegaMenu__PushSubHeading Heading Text--subdued u-h7">{{ block.settings.push_2_subheading | escape }}</p>
+                                {%- endif -%}
+
+                                {%- if block.settings.push_2_url != blank -%}
+                                  </a>
+                                {%- endif -%}
+                              </div>
+                            {%- endif -%}
+                          </div>
+                        {%- endif -%}
+                      </div>
+                    </div>
+                  {%- endfor -%}
+                {%- elsif link.links != blank -%}
+                  <div class="DropdownMenu" aria-hidden="true">
+                    <ul class="Linklist">
+                      {%- for sub_link in link.links -%}
+                        <li class="Linklist__Item" {% if sub_link.links != blank %}aria-haspopup="true"{% endif %}>
+                          <a href="{{ sub_link.url }}" class="Link Link--secondary">{{ sub_link.title | escape }} {% if sub_link.links != blank %}{% render 'icon' with 'select-arrow-right' %}{% endif %}</a>
+
+                          {%- if sub_link.links != blank -%}
+                            <div class="DropdownMenu" aria-hidden="true">
+                              <ul class="Linklist">
+                                {%- for sub_sub_link in sub_link.links -%}
+                                  <li class="Linklist__Item">
+                                    <a href="{{ sub_sub_link.url }}" class="Link Link--secondary">{{ sub_sub_link.title | escape }}</a>
+                                  </li>
+                                {%- endfor -%}
+                              </ul>
+                            </div>
+                          {%- endif -%}
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+                  </div>
+                {%- endif -%}
+              {%- endcapture -%}
+
+              <li class="HorizontalList__Item {% if link.links == blank and link.active %}is-active{% endif %}" {% if menu_item_dropdown != blank %}aria-haspopup="true"{% endif %}>
+                <a href="{{ link.url }}" class="Heading u-h6">
+                  {{- link.title | escape -}}
+
+                  {%- if use_mega_menu or menu_item_dropdown == blank -%}
+                    <span class="Header__LinkSpacer">{{ link.title | escape }}</span>
+                  {%- endif -%}
+                </a>
+
+                {{- menu_item_dropdown -}}
+              </li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+
+        {{- localization_form -}}
+      {%- endunless -%}
+    </div>
+
+    {%- capture header_logo -%}
+      <a href="{{ routes.root_url }}" class="Header__LogoLink">
+        {%- if section.settings.logo != blank -%}
+          {%- capture image_size -%}{{ section.settings.logo_max_width }}x{%- endcapture -%}
+
+          <img class="Header__LogoImage Header__LogoImage--primary"
+               src="{{ section.settings.logo | img_url: image_size }}"
+               srcset="{{ section.settings.logo | img_url: image_size }} 1x, {{ section.settings.logo | img_url: image_size, scale: 2 }} 2x"
+               width="{{ section.settings.logo_max_width }}"
+               alt="{{ section.settings.logo.alt | default: shop.name | escape }}">
+
+          {%- if use_transparent_header and section.settings.transparent_logo != blank -%}
+            <img class="Header__LogoImage Header__LogoImage--transparent"
+                 src="{{ section.settings.transparent_logo | img_url: image_size }}"
+                 srcset="{{ section.settings.transparent_logo | img_url: image_size }} 1x, {{ section.settings.transparent_logo | img_url: image_size, scale: 2 }} 2x"
+                 width="{{ section.settings.logo_max_width }}"
+                 alt="{{ section.settings.transparent_logo.alt | default: shop.name | escape }}">
+          {%- endif -%}
+        {%- else -%}
+          <span class="Heading u-h4">{{ shop.name }}</span>
+        {%- endif -%}
+      </a>
+    {%- endcapture -%}
+
+    <div class="Header__FlexItem Header__FlexItem--logo">
+      {%- if template == 'index' -%}
+        <h1 class="Header__Logo">{{ header_logo }}</h1>
+      {%- else -%}
+        <div class="Header__Logo">{{ header_logo }}</div>
+      {%- endif -%}
+    </div>
+
+    <div class="Header__FlexItem Header__FlexItem--fill">
+      {%- unless section.settings.show_icons or use_sidebar_menu -%}
+        <nav class="Header__SecondaryNav hidden-phone">
+          <ul class="HorizontalList HorizontalList--spacingLoose hidden-pocket hidden-lap">
+            {%- if localization_form != blank and section.settings.navigation_style == 'inline' or section.settings.navigation_style == 'logoLeft' -%}
+              <li class="HorizontalList__Item">
+                {{ localization_form }}
+              </li>
+            {%- endif -%}
+
+            {%- if shop.customer_accounts_enabled -%}
+              <li class="HorizontalList__Item">
+                <a href="{{ routes.account_url }}" class="Heading Link Link--primary Text--subdued u-h8">
+                  {{- 'header.navigation.account' | t -}}
+                </a>
+              </li>
+            {%- endif -%}
+
+            {% comment %} <li class="HorizontalList__Item">
+              <a href="{{ routes.search_url }}" class="Heading Link Link--primary Text--subdued u-h8" data-action="toggle-search">{{ 'header.navigation.search' | t }}</a>
+            </li> {% endcomment %}
+
+            <li class="HorizontalList__Item">
+              <form action="/search" class="search w-form"><input type="search" maxlength="256" name="query" placeholder="Your next sneaker..." required="" class="search-input w-input"><input type="submit" value=" " class="search-button w-button"></form>
+            </li>
+
+            <li class="HorizontalList__Item">
+              <a href="#" class="nav08_button w-button">My Wishlist</a>
+            </li>
+
+            {% comment %} <li class="HorizontalList__Item">
+              <a href="{{ routes.cart_url }}" class="Heading u-h6" {% unless template == 'cart' or settings.cart_type == 'page' %}data-action="open-drawer" data-drawer-id="sidebar-cart" aria-label="{{ 'header.navigation.open_cart' | t }}"{% endunless %}>{{ 'header.navigation.cart' | t }} (<span class="Header__CartCount">{{ cart.item_count }}</span>)</a>
+            </li> {% endcomment %}
+          </ul>
+        </nav>
+      {%- elsif localization_form != blank -%}
+        <nav class="Header__SecondaryNav">
+          <ul class="HorizontalList HorizontalList--spacingLoose hidden-pocket hidden-lap">
+            <li class="HorizontalList__Item">
+              {{ localization_form }}
+            </li>
+          </ul>
+        </nav>
+      {%- endunless -%}
+
+      {%- if shop.customer_accounts_enabled and section.settings.show_icons or use_sidebar_menu -%}
+        <a href="{{ routes.account_url }}" class="Header__Icon Icon-Wrapper Icon-Wrapper--clickable hidden-phone">
+          {%- render 'icon' with 'account' -%}
+        </a>
+      {%- endif -%}
+
+      <a href="{{ routes.search_url }}" class="Header__Icon Icon-Wrapper Icon-Wrapper--clickable {% unless section.settings.show_icons or use_sidebar_menu %}hidden-desk{% endunless %}" data-action="toggle-search" aria-label="{{ 'header.navigation.search' | t }}">
+        <span class="hidden-tablet-and-up">{%- render 'icon' with 'search' -%}</span>
+        <span class="hidden-phone">{%- render 'icon' with 'search-desktop' -%}</span>
+      </a>
+
+      <a href="{{ routes.cart_url }}" class="Header__Icon Icon-Wrapper Icon-Wrapper--clickable {% unless section.settings.show_icons or use_sidebar_menu %}hidden-desk{% endunless %}" {% if settings.cart_type == 'drawer' %}data-action="open-drawer" data-drawer-id="sidebar-cart" aria-expanded="false" aria-label="{{ 'header.navigation.open_cart' | t }}"{% endif %}>
+        <span class="hidden-tablet-and-up">{%- render 'icon' with 'cart' -%}</span>
+        <span class="hidden-phone">{%- render 'icon' with 'cart-desktop' -%}</span>
+        <span class="Header__CartDot {% if cart.item_count > 0 %}is-visible{% endif %}"></span>
+      </a>
+    </div>
+  </div>
+
+
+</header>
+
+<style>
+  {%- if section.settings.use_sticky_header -%}
+    :root {
+      --use-sticky-header: 1;
+      --use-unsticky-header: 0;
+    }
+
+    .shopify-section--header {
+      position: -webkit-sticky;
+      position: sticky;
+    }
+  {%- else -%}
+    :root {
+      --use-sticky-header: 0;
+      --use-unsticky-header: 1;
+    }
+  {%- endif -%}
+
+  {%- if section.settings.logo -%}
+    @media screen and (max-width: 640px) {
+      .Header__LogoImage {
+        max-width: {{ section.settings.mobile_logo_max_width }}px;
+      }
+    }
+  {%- endif -%}
+
+  {%- if use_transparent_header -%}
+    :root {
+      --header-is-not-transparent: 0;
+      --header-is-transparent: 1;
+    }
+
+    .shopify-section--header {
+      margin-bottom: calc(-1 * var(--header-height));
+    }
+
+    .supports-sticky .Search[aria-hidden="true"] + .Header--transparent {
+      {%- if section.settings.show_transparent_header_border -%}
+        box-shadow: 0 -1px {{ section.settings.transparent_text_color | color_modify: 'alpha', 0.25 }} inset;
+      {%- else -%}
+        box-shadow: none;
+      {%- endif -%}
+
+      color: {{ section.settings.transparent_text_color }};
+    }
+  {%- else -%}
+    :root {
+      --header-is-not-transparent: 1;
+      --header-is-transparent: 0;
+    }
+  {%- endif -%}
+</style>
+
+<script>
+  document.documentElement.style.setProperty('--header-height', document.getElementById('shopify-section-header').offsetHeight + 'px');
+</script>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "shopify-section--header",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "use_sticky_header",
+      "label": "Use sticky header",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Image",
+      "info": "200 x 60px .png recommended"
+    },
+    {
+      "type": "range",
+      "id": "logo_max_width",
+      "min": 50,
+      "max": 350,
+      "step": 5,
+      "unit": "px",
+      "label": "Image width",
+      "default": 140
+    },
+    {
+      "type": "range",
+      "id": "mobile_logo_max_width",
+      "min": 50,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Mobile image width",
+      "default": 90
+    },
+    {
+      "type": "header",
+      "content": "Currency selector",
+      "info": "To add a currency, go to your [payment settings.](/admin/settings/payments)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_currency_selector",
+      "label": "Show currency selector",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Language selector",
+      "info": "To add a language, go to your [language settings.](/admin/settings/languages)"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_locale_selector",
+      "label": "Show language selector",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "link_list",
+      "id": "navigation_menu",
+      "label": "Menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "select",
+      "id": "navigation_style",
+      "label": "Navigation style",
+      "info": "Setting will default to center style if screen width cannot fit all the links.",
+      "options": [
+        {
+          "value": "sidebar",
+          "label": "Sidebar"
+        },
+        {
+          "value": "inline",
+          "label": "Inline"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "logoLeft",
+          "label": "Logo left"
+        }
+      ],
+      "default": "inline"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_icons",
+      "label": "Show icons",
+      "info": "Text for account, search and cart are replaced by icons on desktop.",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Transparent header"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_transparent_header",
+      "label": "Enable on homepage",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_transparent_header_collection",
+      "label": "Enable on collection pages",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_transparent_header_border",
+      "label": "Show separation border",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "transparent_text_color",
+      "label": "Text/icon color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "image_picker",
+      "id": "transparent_logo",
+      "label": "Logo image",
+      "info": "200 x 60px .png recommended"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "mega_menu",
+      "name": "Mega menu",
+      "settings": [
+        {
+          "type": "text",
+          "id": "navigation_mega_menu",
+          "label": "Menu item",
+          "info": "Enter menu item to apply a mega menu dropdown. [Learn more](http://support.maestrooo.com/article/149-navigation-enabling-and-configuring-mega-menu)."
+        },
+        {
+          "type": "header",
+          "content": "Image push 1"
+        },
+        {
+          "type": "image_picker",
+          "id": "push_1_image",
+          "label": "Image",
+          "info": "740 x 460 px .jpg recommended"
+        },
+        {
+          "type": "text",
+          "id": "push_1_heading",
+          "label": "Heading",
+          "default": "Example heading"
+        },
+        {
+          "type": "text",
+          "id": "push_1_subheading",
+          "label": "Sub-heading",
+          "default": "Example sub-heading"
+        },
+        {
+          "type": "url",
+          "id": "push_1_url",
+          "label": "Link"
+        },
+        {
+          "type": "header",
+          "content": "Image push 2"
+        },
+        {
+          "type": "image_picker",
+          "id": "push_2_image",
+          "label": "Image",
+          "info": "740 x 460 px .jpg recommended"
+        },
+        {
+          "type": "text",
+          "id": "push_2_heading",
+          "label": "Heading",
+          "default": "Example heading"
+        },
+        {
+          "type": "text",
+          "id": "push_2_subheading",
+          "label": "Sub-heading",
+          "default": "Example sub-heading"
+        },
+        {
+          "type": "url",
+          "id": "push_2_url",
+          "label": "Link"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

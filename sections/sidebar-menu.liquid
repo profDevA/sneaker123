@@ -1,0 +1,118 @@
+{%- assign main_menu_handle = section.settings.primary_menu | default: 'main-menu' -%}
+{%- assign main_menu = linklists[main_menu_handle] -%}
+
+<section id="sidebar-menu" class="SidebarMenu Drawer Drawer--small Drawer--fromLeft" aria-hidden="true" data-section-id="{{ section.id }}" data-section-type="sidebar-menu">
+    <header class="Drawer__Header" data-drawer-animated-left>
+      <button class="Drawer__Close Icon-Wrapper--clickable" data-action="close-drawer" data-drawer-id="sidebar-menu" aria-label="{{ 'header.navigation.close_sidebar' | t }}">
+        {%- render 'icon' with 'close' -%}
+      </button>
+    </header>
+
+    <div class="Drawer__Content">
+      <div class="Drawer__Main" data-drawer-animated-left data-scrollable>
+        <div class="Drawer__Container">
+          <nav class="SidebarMenu__Nav SidebarMenu__Nav--primary" aria-label="{{ 'header.navigation.sidebar_title' | t }}">
+            {%- for link in main_menu.links -%}
+              <div class="Collapsible">
+                {%- if link.links != blank -%}
+                  <button class="Collapsible__Button Heading u-h6" data-action="toggle-collapsible" {% if link.links != blank %}aria-expanded="false"{% endif %}>
+                    {{- link.title | escape -}} <span class="Collapsible__Plus"></span>
+                  </button>
+
+                  <div class="Collapsible__Inner">
+                    <div class="Collapsible__Content">
+                      {%- for sub_link in link.links -%}
+                        <div class="Collapsible">
+                          {%- if sub_link.links != blank -%}
+                            <button class="Collapsible__Button Heading Text--subdued Link--primary u-h7" data-action="toggle-collapsible" {% if sub_link.links != blank %}aria-expanded="false"{% endif %}>
+                              {{- sub_link.title | escape -}} <span class="Collapsible__Plus"></span>
+                            </button>
+
+                            <div class="Collapsible__Inner">
+                              <div class="Collapsible__Content">
+                                <ul class="Linklist Linklist--bordered Linklist--spacingLoose">
+                                  {%- for sub_sub_link in sub_link.links -%}
+                                    <li class="Linklist__Item">
+                                      <a href="{{ sub_sub_link.url }}" class="Text--subdued Link Link--primary">{{ sub_sub_link.title | escape }}</a>
+                                    </li>
+                                  {%- endfor -%}
+                                </ul>
+                              </div>
+                            </div>
+                          {%- else -%}
+                            <a href="{{ sub_link.url }}" class="Collapsible__Button Heading Text--subdued Link Link--primary u-h7">{{ sub_link.title | escape }}</a>
+                          {%- endif -%}
+                        </div>
+                      {%- endfor -%}
+                    </div>
+                  </div>
+                {%- else -%}
+                  <a href="{{ link.url }}" class="Collapsible__Button Heading Link Link--primary u-h6">{{ link.title | escape }}</a>
+                {%- endif -%}
+              </div>
+            {%- endfor -%}
+          </nav>
+
+          {%- assign secondary_menu = linklists[section.settings.secondary_menu] -%}
+
+          <nav class="SidebarMenu__Nav SidebarMenu__Nav--secondary">
+            <ul class="Linklist Linklist--spacingLoose">
+              {%- for link in secondary_menu.links -%}
+                <li class="Linklist__Item">
+                  <a href="{{ link.url }}" class="Text--subdued Link Link--primary">{{ link.title | escape }}</a>
+                </li>
+              {%- endfor -%}
+
+              {%- comment -%}We automatically add some links to the secondary menu{%- endcomment -%}
+
+              {%- if shop.customer_accounts_enabled -%}
+                <li class="Linklist__Item">
+                  <a href="{{ routes.account_url }}" class="Text--subdued Link Link--primary">{{ 'header.navigation.account' | t }}</a>
+                </li>
+              {%- endif -%}
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      {%- if section.settings.show_social_media -%}
+        {%- capture social_media -%}
+          {% render 'social-media', class: 'SidebarMenu__Social', spacing: 'fill' %}
+        {%- endcapture -%}
+      {%- endif -%}
+
+      {%- if social_media != blank -%}
+        <aside class="Drawer__Footer" data-drawer-animated-bottom>
+          {%- if social_media != blank -%}
+            {{ social_media }}
+          {%- endif -%}
+        </aside>
+      {%- endif -%}
+    </div>
+</section>
+
+{% schema %}
+{
+  "name": "Sidebar menu",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "primary_menu",
+      "label": "Primary menu",
+      "default": "main-menu"
+    },
+    {
+      "type": "link_list",
+      "id": "secondary_menu",
+      "label": "Secondary menu",
+      "info": "This menu won't show dropdown items."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_social_media",
+      "label": "Show social media",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

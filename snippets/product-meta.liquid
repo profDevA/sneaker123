@@ -1,0 +1,94 @@
+<div class="ProductMeta">
+  {%- if section.settings.show_vendor and product.vendor != blank -%}
+    <h2 class="ProductMeta__Vendor Heading u-h6">
+      {%- assign vendor_handle = product.vendor | handle -%}
+      {%- assign collection_for_vendor = collections[vendor_handle] -%}
+
+      {%- unless collection_for_vendor.empty? -%}
+        <a href="{{ collection_for_vendor.url }}">{{ product.vendor }}</a>
+      {%- else -%}
+        {{- product.vendor -}}
+      {%- endunless -%}
+    </h2>
+  {%- endif -%}
+
+  <h1 class="ProductMeta__Title Heading u-h2">
+    {%- if template.name == 'product' -%}
+      {{- product.title -}}
+    {%- else -%}
+      <a href="{{ product.url }}">{{ product.title }}</a>
+    {%- endif -%}
+  </h1>
+
+  {%- if section.settings.show_sku and product.selected_or_first_available_variant.sku != blank -%}
+    <p class="ProductMeta__Sku Heading Text--subdued u-h6">{{ 'product.form.sku' | t }}: <span class="ProductMeta__SkuNumber">{{ product.selected_or_first_available_variant.sku }}</span></p>
+  {%- endif -%}
+
+  {%- if product.template_suffix != 'coming-soon' -%}
+    <div class="ProductMeta__PriceList Heading">
+      {%- if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price -%}
+        <span class="ProductMeta__Price Price Price--highlight Text--subdued u-h4">{{ product.selected_or_first_available_variant.price | money_without_trailing_zeros }}</span>
+        <span class="ProductMeta__Price Price Price--compareAt Text--subdued u-h4">{{ product.selected_or_first_available_variant.compare_at_price | money_without_trailing_zeros }}</span>
+      {%- else -%}
+        <span class="ProductMeta__Price Price Text--subdued u-h4">{{ product.selected_or_first_available_variant.price | money_without_trailing_zeros }}</span>
+      {%- endif -%}
+    </div>
+
+    <div class="ProductMeta__UnitPriceMeasurement" style="display: {%- if product.selected_or_first_available_variant.unit_price_measurement -%}block{% else %}none{% endif %}">
+      <div class="UnitPriceMeasurement Heading u-h6 Text--subdued">
+        <span class="UnitPriceMeasurement__Price">{{ product.selected_or_first_available_variant.unit_price | money_without_trailing_zeros }}</span>
+        <span class="UnitPriceMeasurement__Separator">/ </span>
+
+        {%- if product.selected_or_first_available_variant.unit_price_measurement.reference_value != 1 -%}
+          <span class="UnitPriceMeasurement__ReferenceValue">{{ product.selected_or_first_available_variant.unit_price_measurement.reference_value }}</span>
+        {%- endif -%}
+
+        <span class="UnitPriceMeasurement__ReferenceUnit">{{ product.selected_or_first_available_variant.unit_price_measurement.reference_unit }}</span>
+      </div>
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.show_taxes_included -%}
+    {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
+      <p class="ProductMeta__TaxNotice Rte">
+        {%- if shop.taxes_included -%}
+          {{ 'product.general.include_taxes' | t }}
+        {%- endif -%}
+
+        {%- if shop.shipping_policy.body != blank -%}
+          {{ 'product.general.shipping_policy_html' | t: link: shop.shipping_policy.url }}
+        {%- endif -%}
+      </p>
+    {%- endif -%}
+  {%- endif -%}
+
+  {%- if show_description and section.settings.description_below_add_to_cart == false -%}
+    <div class="ProductMeta__Description">
+      <div class="Rte">
+        {%- comment -%}
+        We have figured out that some merchants were copy-pasting huge chunk of code into the product description,
+        which can make the theme crashes if it contains some special attributes used by the theme. We therefore make sure to process this
+        {%- endcomment -%}
+
+        {{ product.description | replace: 'data-section-type', 'data-section-type-placeholder' }}
+      </div>
+
+      {%- if section.settings.show_share_buttons -%}
+        <div class="ProductMeta__ShareButtons hidden-pocket">
+          <span class="ProductMeta__ShareTitle Heading Text--subdued u-h7">{{ 'product.form.share' | t }}</span>
+
+          {%- assign share_url = shop.url | append: product.url -%}
+          {%- assign twitter_text = product.title -%}
+          {%- assign pinterest_description = product.description | strip_html | truncatewords: 15 | url_param_escape -%}
+          {%- assign pinterest_image = product.featured_image | img_url: 'large' | prepend: 'https:' -%}
+
+          <div class="ProductMeta__ShareList Text--subdued">
+            <a class="ProductMeta__ShareItem" href="https://www.facebook.com/sharer.php?u={{ share_url }}" target="_blank" rel="noopener" aria-label="Facebook">{%- render 'icon' with 'facebook' -%}</a>
+            <a class="ProductMeta__ShareItem" href="https://twitter.com/share?{% if twitter_text != blank %}text={{twitter_text}}&{% endif %}url={{ share_url }}" target="_blank" rel="noopener" aria-label="Twitter">{%- render 'icon' with 'twitter' -%}</a>
+            <a class="ProductMeta__ShareItem" href="https://pinterest.com/pin/create/button/?url={{ share_url }}{% if pinterest_image != blank %}&media={{ pinterest_image }}{% endif %}&description={{ pinterest_description }}" target="_blank" rel="noopener" aria-label="Pinterest">{%- render 'icon' with 'pinterest' -%}</a>
+          </div>
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</div>

@@ -1,0 +1,134 @@
+{%- assign text_font_bold = settings.text_font | font_modify: 'weight', 'bolder' -%}
+{%- assign text_font_italic = settings.text_font | font_modify: 'style', 'italic' -%}
+{%- assign text_font_bold_italic = text_font_bold | font_modify: 'style', 'italic' -%}
+
+<style>
+  {{ settings.heading_font | font_face: font_display: 'fallback' }}
+  {{ settings.text_font | font_face: font_display: 'fallback' }}
+
+  {{ text_font_bold | font_face: font_display: 'fallback' }}
+  {{ text_font_italic | font_face: font_display: 'fallback' }}
+  {{ text_font_bold_italic | font_face: font_display: 'fallback' }}
+
+  :root {
+    --heading-font-family : {{settings.heading_font.family}}, {{ settings.heading_font.fallback_families }};
+    --heading-font-weight : {{settings.heading_font.weight}};
+    --heading-font-style  : {{settings.heading_font.style}};
+
+    --text-font-family : {{settings.text_font.family}}, {{ settings.text_font.fallback_families }};
+    --text-font-weight : {{settings.text_font.weight}};
+    --text-font-style  : {{settings.text_font.style}};
+
+    --base-text-font-size   : {{settings.base_text_font_size}}px;
+    --default-text-font-size: 14px;
+
+    {%- assign border_color = settings.background | color_mix: settings.text_color, 85 -%}
+
+    --background          : {{settings.background}};
+    --background-rgb      : {{ settings.background | color_extract: 'red' }}, {{ settings.background | color_extract: 'green' }}, {{ settings.background | color_extract: 'blue' }};
+    --light-background    : {{settings.light_background}};
+    --light-background-rgb: {{settings.light_background | color_extract: 'red' }}, {{settings.light_background | color_extract: 'green' }}, {{settings.light_background | color_extract: 'blue' }};
+    --heading-color       : {{settings.heading_color}};
+    --text-color          : {{settings.text_color}};
+    --text-color-rgb      : {{ settings.text_color | color_extract: 'red' }}, {{ settings.text_color | color_extract: 'green' }}, {{ settings.text_color | color_extract: 'blue' }};
+    --text-color-light    : {{settings.text_light_color}};
+    --text-color-light-rgb: {{ settings.text_light_color | color_extract: 'red' }}, {{ settings.text_light_color | color_extract: 'green' }}, {{ settings.text_light_color | color_extract: 'blue' }};
+    --link-color          : {{settings.link_color}};
+    --link-color-rgb      : {{ settings.link_color | color_extract: 'red' }}, {{ settings.link_color | color_extract: 'green' }}, {{ settings.link_color | color_extract: 'blue' }};
+    --border-color        : {{border_color}};
+    --border-color-rgb    : {{ border_color | color_extract: 'red' }}, {{ border_color | color_extract: 'green' }}, {{ border_color | color_extract: 'blue' }};
+
+    --button-background    : {{settings.button_background}};
+    --button-background-rgb: {{ settings.button_background | color_extract: 'red' }}, {{ settings.button_background | color_extract: 'green' }}, {{ settings.button_background | color_extract: 'blue' }};
+    --button-text-color    : {{settings.button_text_color}};
+
+    --header-background       : {{settings.header_background}};
+    --header-heading-color    : {{settings.header_heading_color}};
+    --header-light-text-color : {{settings.header_light_color}};
+    --header-border-color     : {{settings.header_background | color_mix: settings.header_heading_color, 85}};
+
+    --footer-background    : {{settings.footer_background}};
+    --footer-text-color    : {{settings.footer_text_color}};
+    --footer-heading-color : {{settings.footer_heading_color}};
+    --footer-border-color  : {{settings.footer_background | color_mix: settings.footer_text_color, 85}};
+
+    --navigation-background      : {{settings.navigation_background}};
+    --navigation-background-rgb  : {{ settings.navigation_background | color_extract: 'red' }}, {{ settings.navigation_background | color_extract: 'green' }}, {{ settings.navigation_background | color_extract: 'blue' }};
+    --navigation-text-color      : {{settings.navigation_text_color}};
+    --navigation-text-color-light: rgba({{ settings.navigation_text_color | color_extract: 'red' }}, {{ settings.navigation_text_color | color_extract: 'green' }}, {{ settings.navigation_text_color | color_extract: 'blue' }}, 0.5);
+    --navigation-border-color    : rgba({{ settings.navigation_text_color | color_extract: 'red' }}, {{ settings.navigation_text_color | color_extract: 'green' }}, {{ settings.navigation_text_color | color_extract: 'blue' }}, 0.25);
+
+    --newsletter-popup-background     : {{settings.newsletter_popup_background}};
+    --newsletter-popup-text-color     : {{settings.newsletter_popup_text_color}};
+    --newsletter-popup-text-color-rgb : {{ settings.newsletter_popup_text_color | color_extract: 'red' }}, {{ settings.newsletter_popup_text_color | color_extract: 'green' }}, {{ settings.newsletter_popup_text_color | color_extract: 'blue' }};
+
+    --secondary-elements-background       : {{settings.secondary_elements_background}};
+    --secondary-elements-background-rgb   : {{ settings.secondary_elements_background | color_extract: 'red' }}, {{ settings.secondary_elements_background | color_extract: 'green' }}, {{ settings.secondary_elements_background | color_extract: 'blue' }};
+    --secondary-elements-text-color       : {{settings.secondary_elements_text_color}};
+    --secondary-elements-text-color-light : rgba({{ settings.secondary_elements_text_color | color_extract: 'red' }}, {{ settings.secondary_elements_text_color | color_extract: 'green' }}, {{ settings.secondary_elements_text_color | color_extract: 'blue' }}, 0.5);
+    --secondary-elements-border-color     : rgba({{ settings.secondary_elements_text_color | color_extract: 'red' }}, {{ settings.secondary_elements_text_color | color_extract: 'green' }}, {{ settings.secondary_elements_text_color | color_extract: 'blue' }}, 0.25);
+
+    --product-sale-price-color    : {{settings.product_on_sale_color}};
+    --product-sale-price-color-rgb: {{ settings.product_on_sale_color | color_extract: 'red' }}, {{ settings.product_on_sale_color | color_extract: 'green' }}, {{ settings.product_on_sale_color | color_extract: 'blue' }};
+
+    /* Products */
+
+    {% case settings.product_list_horizontal_spacing %}
+      {%- when 'extra_small' -%}
+        --horizontal-spacing-four-products-per-row: 20px;
+        --horizontal-spacing-two-products-per-row : 20px;
+      {%- when 'small' -%}
+        --horizontal-spacing-four-products-per-row: 40px;
+        --horizontal-spacing-two-products-per-row : 40px;
+      {%- when 'medium' -%}
+        --horizontal-spacing-four-products-per-row: 60px;
+        --horizontal-spacing-two-products-per-row : 60px;
+      {%- when 'large' -%}
+        --horizontal-spacing-four-products-per-row: 80px;
+        --horizontal-spacing-two-products-per-row : 80px;
+      {%- when 'extra_large' -%}
+        --horizontal-spacing-four-products-per-row: 100px;
+        --horizontal-spacing-two-products-per-row : 100px;
+    {% endcase %}
+
+    {% case settings.product_list_vertical_spacing %}
+      {%- when 'extra_small' -%}
+        --vertical-spacing-four-products-per-row: 40px;
+        --vertical-spacing-two-products-per-row : 50px;
+      {%- when 'small' -%}
+        --vertical-spacing-four-products-per-row: 60px;
+        --vertical-spacing-two-products-per-row : 75px;
+      {%- when 'medium' -%}
+        --vertical-spacing-four-products-per-row: 80px;
+        --vertical-spacing-two-products-per-row : 100px;
+      {%- when 'large' -%}
+        --vertical-spacing-four-products-per-row: 100px;
+        --vertical-spacing-two-products-per-row : 125px;
+      {%- when 'extra_large' -%}
+        --vertical-spacing-four-products-per-row: 120px;
+        --vertical-spacing-two-products-per-row : 150px;
+    {% endcase %}
+
+    /* Animation */
+    --drawer-transition-timing: cubic-bezier(0.645, 0.045, 0.355, 1);
+    --header-base-height: 80px; /* We set a default for browsers that do not support CSS variables */
+
+    /* Cursors */
+    --cursor-zoom-in-svg    : url({{ 'cursor-zoom-in.svg' | asset_url }});
+    --cursor-zoom-in-2x-svg : url({{ 'cursor-zoom-in-2x.svg' | asset_url }});
+  }
+</style>
+
+<script>
+  // IE11 does not have support for CSS variables, so we have to polyfill them
+  if (!(((window || {}).CSS || {}).supports && window.CSS.supports('(--a: 0)'))) {
+    const script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = 'https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2';
+    script.onload = function() {
+      cssVars({});
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(script);
+  }
+</script>

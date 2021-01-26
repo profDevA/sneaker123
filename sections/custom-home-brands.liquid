@@ -1,0 +1,43 @@
+<div>
+    <h2 class="heading-14-copy">Shop hundreds of brands</h2>
+    <div class="fe02_container">
+        <div class="fe02_card"><img src="{{ 'fire_1f525.png' | asset_url }}" width="55" alt="" class="fe02_icon">
+        <div class="fe02_card_titles">
+            <h5 class="fe02_h5">Most Popular</h5>
+        </div>
+        </div>
+        <div class="fe02_card"><img src="{{ 'running-shoe_1f45f.png' | asset_url }}" alt="" class="fe02_icon">
+        <div class="fe02_card_titles">
+            <h3 class="fe02_h5">Limited Edition</h3>
+        </div>
+        </div>
+        <div class="fe02_card"><img src="{{ 'gem-stone_1f48e.png' | asset_url }}" alt="" class="fe02_icon">
+        <div class="fe02_card_titles">
+            <h3 class="fe02_h5">Essentials</h3>
+        </div>
+        </div>
+        <div class="fe02_card"><img src="{{ 'smiling-face-with-heart-eyes_1f60d.png' | asset_url }}" alt="" class="fe02_icon">
+        <div class="fe02_card_titles">
+            <h3 class="fe02_h5">Shop Sale</h3>
+        </div>
+        </div>
+    </div>
+    <div class="category-copy">
+        <a href="#" class="link-block-6 w-inline-block">
+        <div class="text-block-8">View All →</div>
+        </a>
+    </div>
+</div>
+
+{% schema %}
+{
+    "name": "Homepage Brands",
+    "class": "home-brands",
+    "presets": [
+        {
+            "category": "custom",
+            "name":"Homepage Brands Section"
+        }
+    ]
+}
+{% endschema %}
