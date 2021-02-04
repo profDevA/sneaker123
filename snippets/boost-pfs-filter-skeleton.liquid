@@ -1,0 +1,38 @@
+{%- assign bc_settings = shop.metafields.bc-sf-filter.settings -%}
+{% if bc_settings contains 'showPlaceholder":' %}
+	{%- assign boost_pfs_placeholder_enable = bc_settings | split: 'showPlaceholder":' | last | split: ',' | first | split: '}' | first | strip -%}
+{% else %}
+	{%- assign boost_pfs_placeholder_enable = 'true' -%}
+{% endif %}
+
+{% if boost_pfs_placeholder_enable == 'true' %}
+  {% case type %}
+    {% when 'filter-tree' %}
+      {% for i in (1..3) %}
+        <div class="boost-pfs-filter-option boost-pfs-filter-option-skeleton">
+          <div class="boost-pfs-filter-option-title">
+            <h3><span></span></h3>
+          </div>
+          <div class="boost-pfs-filter-option-content">
+            <span class="boost-pfs-filter-skeleton-text boost-pfs-filter-skeleton-width3"></span>
+            <span class="boost-pfs-filter-skeleton-text boost-pfs-filter-skeleton-width4"></span>
+            <span class="boost-pfs-filter-skeleton-text boost-pfs-filter-skeleton-width2"></span>
+            <span class="boost-pfs-filter-skeleton-text boost-pfs-filter-skeleton-width1"></span>
+          </div>
+        </div>
+      {% endfor %}
+    {% when 'filter-tree-h' %}
+      {% for i in (1..4) %}
+        <div class="boost-pfs-filter-option boost-pfs-filter-option-skeleton boost-pfs-filter-option-collapsed">
+          <div class="boost-pfs-filter-option-title">
+            <button class="boost-pfs-filter-button boost-pfs-filter-option-title-heading"><span></span></button>
+          </div>
+          <div class="boost-pfs-filter-option-content"></div>
+        </div>
+      {% endfor %}
+    {% when 'button' %}
+      <button class="boost-pfs-filter-skeleton-button"><span></span></button>
+    {% else %}
+      <span class="boost-pfs-filter-skeleton-text boost-pfs-filter-skeleton-width{{- width -}}"></span>
+  {% endcase %}
+{% endif %}

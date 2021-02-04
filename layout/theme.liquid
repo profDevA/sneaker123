@@ -126,7 +126,13 @@
     </script>
 
     {% render 'microdata-schema' %}
-  </head>
+  
+<!--begin-boost-pfs-filter-css-->
+  {% render 'boost-pfs-style' %}
+<!--end-boost-pfs-filter-css-->
+
+
+</head>
 
   {%- capture classes -%}features--heading-{{ settings.heading_size }}{%- endcapture -%}
 
@@ -180,5 +186,9 @@
 
       {% section 'footer' %}
     </div>
-  </body>
+  
+<!--begin-boost-pfs-js-->
+  {% render 'boost-pfs' %}
+<!--end-boost-pfs-js-->
+</body>
 </html>

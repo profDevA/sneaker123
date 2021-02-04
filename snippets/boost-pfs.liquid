@@ -1,0 +1,101 @@
+{%- comment -%} Check if template is collection or search page  {%- endcomment -%}
+{%- assign boost_pfs_is_initfilter = false -%}
+{%- if request.page_type == 'collection' or request.page_type == 'search' -%}
+  {%- unless template contains 'boost-pfs-original' -%}
+    {%- assign boost_pfs_is_initfilter = true -%}
+  {%- endunless -%}
+{%- endif -%}
+
+<script>
+  /* Declare bcSfFilterConfig variable */
+  var boostPFSAppConfig = {
+    api: {
+      filterUrl: 'https://services.mybcapps.com/bc-sf-filter/filter',
+      searchUrl: 'https://services.mybcapps.com/bc-sf-filter/search',
+      suggestionUrl: 'https://services.mybcapps.com/bc-sf-filter/search/suggest',
+      analyticsUrl: 'https://lambda.mybcapps.com/e'
+    },
+    shop: {
+      name: '{{ shop.name | escape }}',
+      url: '{{ shop.url }}',
+      domain: '{{ shop.permanent_domain }}',
+      currency: '{{ shop.currency }}',
+      money_format: '{{ shop.money_format | replace: "'", '"' | replace: "$", "&#36;" }}'
+    },
+    general: {
+      file_url: "{{ '' | file_url }}",
+      asset_url: "{{ 'boost-pfs.js' | asset_url }}",
+      collection_id: {{ collection.id | default: 0 }},
+      collection_handle: "{{ collection.handle }}",
+      {% if template contains 'collection' and collection.handle %}
+      collection_count: {{ collection.products_count  }},
+      {% endif %}
+      {% if request.page_type == 'product' %}
+      product_id: {{ product.id | default: 0 }},
+      {% endif %}
+      collection_tags: {{ current_tags | json }},
+      current_tags: {{ current_tags | json }},
+      default_sort_by: "{{ collection.default_sort_by }}",
+      swatch_extension: "png",
+      no_image_url: "{{ 'boost-pfs-no-image.gif' | asset_url }}",
+      search_term: "{{ search.terms | default: '' | url_encode }}",
+      template: "{{ template }}",
+      {%- comment -%} Get currencies {%- endcomment -%}
+      currencies: [
+        {%- for currency in shop.enabled_currencies -%}
+        {{- currency.iso_code | json -}}{%- if forloop.last != true -%},{%- endif -%}
+        {%- endfor -%}
+      ],
+      current_currency: {{- cart.currency.iso_code | json -}},
+      {%- comment -%} Get locales {%- endcomment -%}
+      published_locales: {
+        {%- for locale in shop.published_locales -%}
+        {{- locale.iso_code | json -}}:{{- locale.primary | json -}}{%- if forloop.last != true -%},{%- endif -%}
+        {%- endfor -%}
+      },
+      current_locale: {{- request.locale.iso_code | json -}},
+      isInitFilter: {{- boost_pfs_is_initfilter | json -}}
+    },
+    {% if shop.metafields.bc-sf-filter.settings != blank %}
+    settings: {{ shop.metafields.bc-sf-filter.settings | strip_html }},
+    {% endif %}
+    {% if shop.metafields.pfs-swatch-settings != blank %}
+    swatch_settings: {{ shop.metafields.pfs-swatch-settings | json | strip_html }},
+    {% endif %}
+  };
+  function mergeObject(obj1, obj2){
+    var obj3 = {};
+    for (var attr in obj1) { obj3[attr] = obj1[attr]; }
+    for (var attr in obj2) { obj3[attr] = obj2[attr]; }
+    return obj3;
+  }
+  if (typeof boostPFSConfig == 'undefined') {
+    boostPFSConfig = {};
+  }
+  if (typeof boostPFSAppConfig != 'undefined') {
+    boostPFSConfig = mergeObject(boostPFSConfig, boostPFSAppConfig);
+  }
+  if (typeof boostPFSThemeConfig != 'undefined') {
+    boostPFSConfig = mergeObject(boostPFSConfig, boostPFSThemeConfig);
+  }
+</script>
+
+<!-- Include Resources -->
+{%- if boost_pfs_is_initfilter == true -%}
+  <script defer src="{{ 'boost-pfs-vendor.js' | asset_url }}"></script>
+  <script defer src="{{ 'boost-pfs-core.js' | asset_url }}"></script>
+  <script defer src="{{ 'boost-pfs-filter.js' | asset_url }}"></script>
+  <script defer src="{{ 'boost-pfs-instant-search.js' | asset_url }}"></script>
+{%- else -%}
+  <script defer src="{{ 'boost-pfs-core-instant-search.js' | asset_url }}"></script>
+  <script defer src="{{ 'boost-pfs-instant-search.js' | asset_url }}"></script>
+{%- endif -%}
+
+<!-- Initialize App -->
+<script defer src="{{ 'boost-pfs-init.js' | asset_url }}"></script>
+
+{% capture boost_pfs_search_no_result_content %}{% render  "boost-pfs-instant-search-no-result-json" %}{% endcapture %}
+{% unless boost_pfs_search_no_result_content contains "Liquid error" %}
+  <!-- Instant search no result JSON data -->
+  {% render  "boost-pfs-instant-search-no-result-json" %}
+{% endunless %}

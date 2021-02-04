@@ -372,12 +372,17 @@
         "settings": {
           "show_collection_info": true,
           "show_collection_image": false,
-          "show_sort_by": true,
+          "apply_overlay": true,
+          "show_color_swatch": false,
+          "show_vendor": false,
+          "collection_image_size": "normal",
+          "show_sort_by": false,
           "show_layout_switch": false,
           "toolbar_position": "bottom",
           "filter_position": "sidebar",
           "filter_mode": "tag",
           "show_filter_color_swatch": true,
+          "filter_menu": "",
           "grid_items_per_page": 16,
           "grid_mobile_items_per_row": "2",
           "grid_desktop_items_per_row": 4
@@ -386,9 +391,11 @@
       "recently-viewed-products": {
         "type": "recently-viewed-products",
         "settings": {
-          "show_section": true,
+          "show_section": false,
           "title": "Recently viewed",
-          "show_product_info": true
+          "show_product_info": true,
+          "show_vendor": false,
+          "show_color_swatch": false
         }
       },
       "collection-footer": {
@@ -404,25 +411,39 @@
       "product-template": {
         "type": "product-template",
         "settings": {
-          "show_share_buttons": true,
-          "show_vendor": true,
+          "show_share_buttons": false,
+          "show_vendor": false,
+          "show_sku": true,
+          "show_taxes_included": false,
+          "description_below_add_to_cart": false,
+          "selector_mode": "dropdown",
           "show_color_swatch": false,
           "show_color_carousel": false,
-          "show_quantity_selector": true,
+          "show_quantity_selector": false,
           "show_inventory_quantity": false,
           "inventory_quantity_threshold": 3,
-          "image_size": "large",
-          "stack_images": true,
+          "show_price_in_button": false,
+          "show_payment_button": false,
+          "show_pickup_availability": false,
+          "image_size": "medium",
+          "stack_images": false,
           "show_thumbnails": false,
-          "enable_image_zoom": true,
-          "reviews_enabled": false
+          "enable_image_zoom": false,
+          "enable_video_looping": false,
+          "tab_page_1_handle": "",
+          "tab_page_2_handle": "",
+          "reviews_enabled": false,
+          "featured_image_size": "large"
         }
       },
       "product-recommendations": {
         "type": "product-recommendations",
         "settings": {
-          "show_product_recommendations": true,
-          "show_product_info": true
+          "show_product_recommendations": false,
+          "heading": "You may also like",
+          "show_product_info": false,
+          "show_vendor": false,
+          "show_color_swatch": false
         }
       },
       "popup": {
@@ -437,9 +458,59 @@
           "show_newsletter": true,
           "apparition_delay": 5
         }
+      },
+      "16115986031671afeb": {
+        "type": "banner",
+        "settings": {}
+      },
+      "16116345427d17df4c": {
+        "type": "custom-home-3-steps",
+        "settings": {}
+      },
+      "16116455708d9ce536": {
+        "type": "custom-home-brands",
+        "settings": {}
+      },
+      "1611653809922fac47": {
+        "type": "custom-home-partners",
+        "settings": {}
+      },
+      "1611654401efe0f40f": {
+        "type": "custom-home-cta",
+        "settings": {}
+      },
+      "16116773652bc3c2aa": {
+        "type": "custom-home-collections",
+        "settings": {}
+      },
+      "cart-template": {
+        "type": "cart-template",
+        "settings": {
+          "show_shipping_estimator": true,
+          "shipping_estimator_default_country": "United States"
+        }
+      },
+      "list-collections-template": {
+        "type": "list-collections-template",
+        "settings": {
+          "collections_to_show": "all",
+          "image_size": "normal",
+          "add_spacing": true,
+          "expand_collection": false,
+          "apply_overlay": true,
+          "text_color": "#ffffff",
+          "button_color": "#363636"
+        }
       }
     },
-    "content_for_index": []
+    "content_for_index": [
+      "16115986031671afeb",
+      "16116345427d17df4c",
+      "16116455708d9ce536",
+      "16116773652bc3c2aa",
+      "1611653809922fac47",
+      "1611654401efe0f40f"
+    ]
   },
   "presets": {
     "Allure": {

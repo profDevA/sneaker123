@@ -1,0 +1,21 @@
+{%- assign boost_settings = shop.metafields.bc-sf-filter.settings -%}
+{% if boost_settings contains 'suggestionNoResult":' %}
+	{%- assign boost_pfs_suggestion_no_result = boost_settings | split: 'suggestionNoResult":' | last | split: '}}' | first | strip -%}
+{% else %}
+	{%- assign boost_pfs_suggestion_no_result = '' -%}
+{% endif %}
+
+{%- assign boost_pfs_product_list = boost_pfs_suggestion_no_result | split: 'products":' | last | split: ':[' | last | split: ']' | first | replace: '"', '' | split: ',' -%}
+{%- assign boost_pfs_suggest_list_temp = boost_pfs_suggestion_no_result | split: 'search_terms":' | last | split: ']' | first | split: ':[' -%}
+{%- assign boost_pfs_suggest_list = boost_pfs_suggest_list_temp[1] | replace: '"', '' | split: ',' -%}
+
+<script type="application/json" id="boost-pfs-instant-search-products-not-found-json">
+	{
+		"search_terms": {{ boost_pfs_suggest_list | json }},
+		"products": [
+		{%- for prodHandle in boost_pfs_product_list -%}
+		{{- all_products[prodHandle] | json -}}{%- if forloop.last != true -%},{%- endif -%}
+		{%- endfor -%}
+		]
+	}
+</script>

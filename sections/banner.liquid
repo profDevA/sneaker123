@@ -1,12 +1,13 @@
 <div class="section-standard hero lp-template">
     <div class="flex-horizontal flip-svp">
       <div class="col small">
-        <div class="div-550">
-          <h1 class="heading-1">Find your next sneaker</h1>
-          <p class="subheadline _500w">Search over 60,000 sneakers from consignment stores and marketplaces around the world</p>
-          <div class="form-block _500w w-form">
-            <form id="email-form" name="email-form" data-name="Email Form" class="form"><input type="email" class="text-field w-input" maxlength="256" name="email-2" data-name="Email 2" placeholder="Your next sneaker..." id="email-2" required="">
-              <a href="#" class="button-3 w-button">Search</a>
+        <div class="banner-left">
+          <h1 class="heading">Find your next sneaker</h1>
+          <p class="subheadline">Search over 60,000 sneakers from consignment stores and marketplaces around the world</p>
+          <div class="form-block w-form">
+            <form class="form" action="{{ routes.search_url }}" name="GET" role="search">
+              <input type="text" class="text-field w-input" maxlength="256" name="q" placeholder="Your next sneaker...">
+              <input type="submit" class="button-3 w-button" value="Search" >
             </form>
             <div class="w-form-done">
               <div>Thank you! Your submission has been received!</div>

@@ -20,17 +20,20 @@
     {%- endif -%}
   </h1>
 
-  {%- if section.settings.show_sku and product.selected_or_first_available_variant.sku != blank -%}
-    <p class="ProductMeta__Sku Heading Text--subdued u-h6">{{ 'product.form.sku' | t }}: <span class="ProductMeta__SkuNumber">{{ product.selected_or_first_available_variant.sku }}</span></p>
-  {%- endif -%}
 
   {%- if product.template_suffix != 'coming-soon' -%}
-    <div class="ProductMeta__PriceList Heading">
-      {%- if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price -%}
-        <span class="ProductMeta__Price Price Price--highlight Text--subdued u-h4">{{ product.selected_or_first_available_variant.price | money_without_trailing_zeros }}</span>
-        <span class="ProductMeta__Price Price Price--compareAt Text--subdued u-h4">{{ product.selected_or_first_available_variant.compare_at_price | money_without_trailing_zeros }}</span>
-      {%- else -%}
-        <span class="ProductMeta__Price Price Text--subdued u-h4">{{ product.selected_or_first_available_variant.price | money_without_trailing_zeros }}</span>
+    <div class="ProductMeta__Header">
+      <div class="ProductMeta__PriceList Heading">
+        {%- if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price -%}
+          <span class="ProductMeta__Price Price Price--highlight Text--subdued u-h4">{{ product.selected_or_first_available_variant.price | money_without_trailing_zeros }}</span>
+          <span class="ProductMeta__Price Price Price--compareAt Text--subdued u-h4">{{ product.selected_or_first_available_variant.compare_at_price | money_without_trailing_zeros }}</span>
+        {%- else -%}
+          <span class="ProductMeta__Price Price Text--subdued u-h4">{{ product.selected_or_first_available_variant.price | money_without_trailing_zeros }}</span>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.show_sku and product.selected_or_first_available_variant.sku != blank -%}
+        <p class="ProductMeta__Sku Heading Text--subdued u-h6">{{ 'product.form.sku' | t }}: <span class="ProductMeta__SkuNumber">{{ product.selected_or_first_available_variant.sku }}</span></p>
       {%- endif -%}
     </div>
 
@@ -62,14 +65,10 @@
     {%- endif -%}
   {%- endif -%}
 
+  {%- comment -%}
   {%- if show_description and section.settings.description_below_add_to_cart == false -%}
     <div class="ProductMeta__Description">
       <div class="Rte">
-        {%- comment -%}
-        We have figured out that some merchants were copy-pasting huge chunk of code into the product description,
-        which can make the theme crashes if it contains some special attributes used by the theme. We therefore make sure to process this
-        {%- endcomment -%}
-
         {{ product.description | replace: 'data-section-type', 'data-section-type-placeholder' }}
       </div>
 
@@ -91,4 +90,5 @@
       {%- endif -%}
     </div>
   {%- endif -%}
+  {%- endcomment -%}
 </div>

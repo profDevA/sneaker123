@@ -1,0 +1,100 @@
+/*********************** Custom CSS for Boost Filter & Search  ************************/
+{% assign breakpointMobile = '767px' %}
+{% assign breakpointDesktop = '768px' %}
+{% assign searchBoxMobileHeight = '64px' %}
+
+/**************************** Place your custom css below  ****************************/
+@media (max-width: {{breakpointMobile}}) {
+  #boost-pfs-filter-products .ProductItem {
+    visibility: inherit !important;
+  }
+}
+.boost-pfs-filter-option .boost-pfs-filter-option-title .boost-pfs-filter-clear {
+  margin-right: 25px;
+}
+
+.boost-pfs-filter-tree-v .boost-pfs-filter-option .boost-pfs-filter-option-title .boost-pfs-filter-option-title-heading > span:before {
+  border: none;
+  content: "-";
+  font-size: 40px;
+  position: absolute;
+  right: 6px;
+  top: -4px;
+}
+
+.boost-pfs-filter-tree-v .boost-pfs-filter-option.boost-pfs-filter-option-collapsed .boost-pfs-filter-option-title .boost-pfs-filter-option-title-heading > span:before {
+  content: "+";
+  right: 6px;
+  top: 0;
+  font-size: 25px;
+}
+
+.boost-pfs-filter-tree-v .boost-pfs-filter-option .boost-pfs-filter-option-title .boost-pfs-filter-option-title-heading {
+  color: #5c5c5c;
+  font-size: 15px;
+  font-weight: normal;
+  text-transform: capitalize;
+}
+
+.boost-pfs-filter-option .boost-pfs-filter-option-title {
+  position: relative;
+}
+
+.boost-pfs-filter-option .boost-pfs-filter-option-content {
+  color: #939393;
+}
+
+.boost-pfs-filter-products.ProductList--grid .ProductItem {
+  visibility: visible !important;
+}
+
+#boost-pfs-filter-tree {
+  margin: 20px;
+}
+
+/* Search style */
+.boost-pfs-search-box {
+  box-shadow: none !important;
+}
+
+@media (max-width: {{breakpointMobile}}) {
+  .boost-pfs-search-suggestion-wrapper, .boost-pfs-search-suggestion {
+    left: 0px !important;
+    width: 100vw !important;
+  }
+}
+/* Filter mobile style */
+@media (max-width: {{breakpointMobile}}) {
+  .boost-pfs-filter-tree-v {
+    display: block !important;
+    width: auto !important;
+  }
+}
+/**** Custom Search result toolbar ****/
+.boost-pfs-search-result-toolbar {
+  display: flex;
+  align-items: center;
+  margin: 35px 0;
+  border-top: 1px solid #cfcfcf;
+  border-bottom: 1px solid #cfcfcf;
+  white-space: nowrap;
+}
+.boost-pfs-search-result-toolbar .boost-pfs-search-result-item:first-child {
+  flex: auto;
+}
+.boost-pfs-search-result-toolbar .boost-pfs-search-result-panel-controls {
+  padding: 13px 0;
+  margin: 0;
+}
+@media (max-width: {{breakpointMobile}}) {
+  .boost-pfs-search-result-toolbar .boost-pfs-search-totlal-result {
+    display: none;
+  }
+}
+
+.boost-pfs-search-result-wrap {
+  margin-top: 50px;
+}
+.boost-pfs-search-result-wrap .boost-pfs-search-result-list-item {
+  border-color: #cfcfcf;
+}
