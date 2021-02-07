@@ -22,3 +22,11 @@
  *   bubbles: true
  * }));
  */
+
+let elementsArray = document.querySelectorAll(".swym-button");
+
+elementsArray.forEach(function(elem) {
+    elem.addEventListener("click", function(e) {
+       
+    });
+});

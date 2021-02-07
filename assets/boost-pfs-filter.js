@@ -24,6 +24,7 @@ var boostPFSFilterConfig = {
 		'productGridItemHtml': '<div class="Grid__Cell 1/'+ boostPFSThemeConfig.custom.mobile_row + '--phone 1/' + boostPFSThemeConfig.custom.tablet_row + '--tablet-and-up 1/' + boostPFSThemeConfig.custom.desktop_row + '--' + buildClass() +'">'+
 									'<div class="ProductItem '+ buildClassHiz() +'">'+
 										'<div class="ProductItem__Wrapper">'+
+											'{{itemWishlist}}' + 
 											'{{itemImages}}' +
 											'{{itemLabels}}'+
 											'{{itemInfo}}'+
@@ -90,6 +91,10 @@ var boostPFSFilterConfig = {
 		// Add main attribute (Always put at the end of this function)
 		itemHtml = itemHtml.replace(/{{itemInfo}}/g, buildInfo(data, index));
 		itemHtml = itemHtml.replace(/{{itemUrl}}/g, Utils.buildProductItemUrl(data));
+
+		/* Swym integration */
+		var itemWishlistHtml = '<div class="wishlist-icon-wrap"><button class="swym-button swym-add-to-wishlist-view-product product_{{itemId}}" data-swaction="addToWishlist"  data-product-id="' + JSON.stringify(data.id) + '"></button></div>';
+		itemHtml = itemHtml.replace(/{{itemWishlist}}/g, itemWishlistHtml);
 		return itemHtml;
 	};
 
@@ -449,6 +454,24 @@ var boostPFSFilterConfig = {
 			}
 			jQ(this).closest('.ProductItem__Wrapper').find('.ProductItem__PriceList').html(variantPrice);
 		})
+
+		/** Start Swym integration **/
+		window.SwymCallbacks = window.SwymCallbacks || [];
+		window.SwymCallbacks.push(function(swat) { 
+			// Wrap with callback for loading without additional checks
+			var products = [];
+			data.forEach(function(product) {
+				var image_src = Utils.getFeaturedImage(product.images_info);
+				var productCopy = product;
+				productCopy.featured_image = image_src;
+				productCopy.price = product.price_min; // Sometimes I need to multiply the price with 100
+				productCopy.compare_at_price = product.compare_at_price_min; // Sometimes I need to multiply the price with 100
+				products.push(productCopy);
+			});
+			swat.mapShopifyProducts(products); // Product mapped data to swym layer
+			swat.initializeActionButtons(Selector.products); // Buttons can now be initialized
+		});
+		/** End Swym integration **/
 	};
 
 	// Build additional elements

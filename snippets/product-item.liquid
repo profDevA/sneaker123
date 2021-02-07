@@ -5,6 +5,11 @@
     sure that the image sizes we offer is not larger than the max size uploaded by the merchants.
     {%- endcomment -%}
 
+    {% include 'swym-product-view', product: product %}
+    <div class="wishlist-icon-wrap">
+      <button class="swym-button swym-add-to-wishlist-view-product product_{{product.id}}" data-swaction="addToWishlist" data-product-id="{{product.id | json}}"></button>
+    </div>
+
     {%- if settings.product_image_size == 'natural' or use_horizontal -%}
       {%- assign use_natural_size = true -%}
     {%- else -%}

@@ -9,216 +9,78 @@
 {%- endif -%}
 
 <footer id="section-{{ section.id }}" data-section-id="{{ section.id }}" data-section-type="footer" class="Footer {% if section.blocks.size <= 2 %}Footer--center{% endif %} {% if add_top_margin %}Footer--withMargin{% endif %}" role="contentinfo">
-{% comment %}
-  <div class="Container">
-    {%- if section.blocks.size > 0 -%}
-      <div class="Footer__Inner">
-        {%- for block in section.blocks -%}
-          <div class="Footer__Block Footer__Block--{{ block.type }}" {{ block.shopify_attributes }}>
-            {%- case block.type -%}
-              {%- when 'text' -%}
-                {%- if block.settings.title != blank -%}
-                  <h2 class="Footer__Title Heading u-h6">{{ block.settings.title | escape }}</h2>
-                {%- endif -%}
-
-                {%- if block.settings.content != blank -%}
-                  <div class="Footer__Content Rte">
-                    {{ block.settings.content }}
-                  </div>
-                {%- endif -%}
-
-                {%- if block.settings.show_social_media -%}
-                  {% render 'social-media', class: 'Footer__Social', spacing: 'loose' %}
-                {%- endif -%}
-
-              {%- when 'links' -%}
-                {%- assign linklist = linklists[block.settings.menu] -%}
-
-                {%- if linklist != empty -%}
-                  <h2 class="Footer__Title Heading u-h6">{{ linklist.title | escape }}</h2>
-
-                  <ul class="Linklist">
-                    {%- for link in linklist.links -%}
-                      <li class="Linklist__Item">
-                        <a href="{{ link.url }}" class="Link Link--primary">{{ link.title | escape }}</a>
-                      </li>
-                    {%- endfor -%}
-                  </ul>
-                {%- endif -%}
-
-              {%- when 'newsletter' -%}
-                {%- if block.settings.title != blank -%}
-                  <h2 class="Footer__Title Heading u-h6">{{ block.settings.title | escape }}</h2>
-                {%- endif -%}
-
-                {%- if block.settings.content != blank -%}
-                  <div class="Footer__Content Rte">
-                    {{ block.settings.content }}
-                  </div>
-                {%- endif -%}
-
-                {%- form 'customer', id: 'footer-newsletter', class: 'Footer__Newsletter Form' -%}
-                  {%- if form.posted_successfully? -%}
-                    <p class="Form__Alert Alert Alert--success">{{ 'footer.newsletter.success' | t }}</p>
-                  {%- else -%}
-                    {%- if form.errors -%}
-                      <p class="Form__Alert Alert Alert--error">{{ form.errors.messages['email'] }}</p>
-                    {%- endif -%}
-
-                    <input type="hidden" name="contact[tags]" value="newsletter">
-                    <input type="email" name="contact[email]" class="Form__Input" aria-label="{{ 'footer.newsletter.input' | t }}" placeholder="{{ 'footer.newsletter.input' | t }}" required>
-                    <button type="submit" class="Form__Submit Button Button--primary">{{ 'footer.newsletter.submit' | t }}</button>
-                  {%- endif -%}
-                {%- endform -%}
-            {%- endcase -%}
-          </div>
-        {%- endfor -%}
-      </div>
-    {%- endif -%}
-
-    <div class="Footer__Aside">
-      {%- if section.settings.show_currency_selector and shop.enabled_currencies.size > 1 -%}
-        {%- assign currency_selector = true -%}
-      {%- endif -%}
-
-      {%- if section.settings.show_locale_selector and shop.published_locales.size > 1 -%}
-        {%- assign locale_selector = true -%}
-      {%- endif -%}
-
-      {%- if locale_selector or currency_selector -%}
-        <div class="Footer__Localization">
-          {%- form 'localization', id: 'localization_form_footer', class: 'Footer__LocalizationForm' -%}
-            {%- if currency_selector -%}
-              <div class="Footer__LocalizationItem">
-                <input type="hidden" name="currency_code" value="{{ form.current_currency.iso_code }}">
-                <span class="u-visually-hidden">{{ 'footer.general.currency' | t }}</span>
-
-                <button type="button" class="SelectButton Link Link--primary u-h8" aria-haspopup="true" aria-expanded="false" aria-controls="footer-currency-popover">
-                  {{ form.current_currency.iso_code }} {% if form.current_currency.symbol %}{{ form.current_currency.symbol }}{% endif %}
-                  {%- render 'icon', icon: 'select-arrow' -%}
-                </button>
-
-                <div id="footer-currency-popover" class="Popover Popover--small Popover--noWrap" aria-hidden="true">
-                  <header class="Popover__Header">
-                    <button type="button" class="Popover__Close Icon-Wrapper--clickable" data-action="close-popover">{% render 'icon' with 'close' %}</button>
-                    <span class="Popover__Title Heading u-h4">{{ 'footer.general.currency' | t }}</span>
-                  </header>
-
-                  <div class="Popover__Content">
-                    <div class="Popover__ValueList Popover__ValueList--center" data-scrollable>
-                      {%- for currency in form.available_currencies -%}
-                        <button type="submit" name="currency_code" class="Popover__Value {% if currency.iso_code == form.current_currency.iso_code %}is-selected{% endif %} Heading Link Link--primary u-h6"  value="{{ currency.iso_code }}" {% if currency.iso_code == form.current_currency.iso_code %}aria-current="true"{% endif %}>
-                          {{ currency.iso_code }} {% if currency.symbol %}{{ currency.symbol }}{% endif %}
-                        </button>
-                      {%- endfor -%}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            {%- endif -%}
-
-            {%- if locale_selector -%}
-              <div class="Footer__LocalizationItem">
-                <input type="hidden" name="locale_code" value="{{ form.current_locale.iso_code }}">
-                <span class="u-visually-hidden">{{ 'footer.general.locale' | t }}</span>
-
-                <button type="button" class="SelectButton Link Link--primary u-h8" aria-haspopup="true" aria-expanded="false" aria-controls="footer-locale-popover">
-                  {{- form.current_locale.endonym_name -}}
-                  {%- render 'icon', icon: 'select-arrow' -%}
-                </button>
-
-                <div id="footer-locale-popover" class="Popover Popover--small Popover--noWrap" aria-hidden="true">
-                  <header class="Popover__Header">
-                    <button type="button" class="Popover__Close Icon-Wrapper--clickable" data-action="close-popover">{% render 'icon' with 'close' %}</button>
-                    <span class="Popover__Title Heading u-h4">{{ 'footer.general.locale' | t }}</span>
-                  </header>
-
-                  <div class="Popover__Content">
-                    <div class="Popover__ValueList Popover__ValueList--center" data-scrollable>
-                      {%- for locale in form.available_locales -%}
-                        <button type="submit" name="locale_code" class="Popover__Value {% if locale.iso_code == form.current_locale.iso_code %}is-selected{% endif %} Heading Link Link--primary u-h6" value="{{ locale.iso_code }}" {% if locale.iso_code == form.current_locale.iso_code %}aria-current="true"{% endif %}>
-                          {{- locale.endonym_name -}}
-                        </button>
-                      {%- endfor -%}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            {%- endif -%}
-          {%- endform -%}
-        </div>
-      {%- endif -%}
-
-      <div class="Footer__Copyright">
-        <a href="{{ routes.root_url }}" class="Footer__StoreName Heading u-h7 Link Link--secondary">© {{ shop.name }}</a>
-        <p class="Footer__ThemeAuthor">{{ powered_by_link }}</p>
-      </div>
-
-      {%- if section.settings.show_payment_methods -%}
-        {%- capture payment_methods -%}
-          {%- for type in shop.enabled_payment_types -%}
-            <li class="HorizontalList__Item">{{ type | payment_type_svg_tag }}</li>
-          {%- endfor -%}
-        {%- endcapture -%}
-
-        {%- if payment_methods != blank -%}
-          <ul class="Footer__PaymentList HorizontalList">
-            {{ payment_methods }}
-          </ul>
-        {%- endif -%}
-      {%- endif -%}
-    </div>
-  </div>
-  {% endcomment %}
+  
   <div class="f12">
     <div class="f12_container">
+      {% if section.blocks.size > 0 %}
+        {%- assign footer_menus = '' -%}
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+            {%- when 'newsletter' -%}
+              {%- capture newsletter -%}
+                <div class="f12_title_wrap">
+                  {%- if block.settings.title != blank -%}
+                    <h3 class="f12_h3">{{block.settings.title}}</h3>
+                  {%- endif -%}
+                  {%- if block.settings.content != blank -%}
+                    <div class="f12_caption">{{block.settings.content}}<br></div>
+                  {%- endif -%}
+                </div>
+                <div class="f12_form_block w-form">
+                  {%- form 'customer', id: 'footer-newsletter', class: 'Footer__Newsletter Form' -%}
+                    {%- if form.posted_successfully? -%}
+                      <p class="Form__Alert Alert Alert--success">{{ 'footer.newsletter.success' | t }}</p>
+                    {%- else -%}
+                      {%- if form.errors -%}
+                        <p class="Form__Alert Alert Alert--error">{{ form.errors.messages['email'] }}</p>
+                      {%- endif -%}
+  
+                      <input type="hidden" name="contact[tags]" value="newsletter">
+                      <input type="email" name="contact[email]" class="Form__Input" aria-label="{{ 'footer.newsletter.input' | t }}" placeholder="Join our newsletter" required>
+                      <button type="submit" class="Form__Submit Button Button--primary">Sign Up</button>
+                    {%- endif -%}
+                  {%- endform -%}
+                </div>
+              {%- endcapture -%}
+               
+            {%- when 'links' -%}
+            {%- assign linklist = linklists[block.settings.menu] -%}
+
+            {%- if linklist != empty -%}
+              {%- capture footer_menu -%}
+                <div class="f12_column">
+                  <div class="f12_title">{{ block.settings.menu_title | default: linklist.title | escape }}</div>
+                  {%- for link in linklist.links -%}
+                    <a href="{{link.url}}" class="f12_link">{{ link.title | escape }}</a>
+                  {%- endfor -%}
+                </div>
+              {%- endcapture -%}
+              {%- capture footer_menus -%}
+                {{footer_menus}}{{footer_menu}}
+              {%- endcapture -%}
+            {%- endif -%}
+          {%- endcase -%}
+        {%- endfor -%}
+
       <div class="f12_footer_top">
-        <div class="f12_title_wrap">
-          <h3 class="f12_h3">Subscribe to updates</h3>
-          <div class="f12_caption">Stay on top of the latest sneaker releases<br></div>
-        </div>
-        <div class="f12_form_block w-form">
-          <form id="email-form-2" name="email-form-2" data-name="Email Form 2" class="f12_form"><input type="email" class="f12_input w-input" maxlength="256" name="Email" data-name="Email" placeholder="Join our newsletter" id="Email-3" required=""><input type="submit" value="Sign Up" data-wait="Please wait..." class="f12_button w-button"></form>
-          <div class="f05_success w-form-done">
-            <div class="f05_text">Thank you! Your submission has been received!</div>
-          </div>
-          <div class="f05_error w-form-fail">
-            <div class="f05_text">Oops! Something went wrong while submitting the form.</div>
-          </div>
-        </div>
+        {{newsletter}}
       </div>
       <div class="f12_line"></div>
       <div class="f12_colum_wrap">
-        <div class="f12_column">
-          <div class="f12_title">Popular</div>
-          <a href="#" class="f12_link">Most Popular</a>
-          <a href="#" class="f12_link">Nav Link</a>
-          <a href="#" class="f12_link">Nav Link</a>
-          <a href="#" class="f12_link">Nav Link</a>
-        </div>
-        <div class="f12_column">
-          <div class="f12_title">Products</div>
-          <a href="#" class="f12_link">Yeezy</a>
-          <a href="#" class="f12_link">Yeezy</a>
-          <a href="#" class="f12_link">Yeezy</a>
-        </div>
-        <div class="f12_column">
-          <div class="f12_title">Resources</div>
-          <a href="#" class="f12_link">Blog</a>
-          <a href="#" class="f12_link">Press</a>
-          <a href="#" class="f12_link">Help Centre</a>
-        </div>
+        {{ footer_menus }}
         <div class="f12_column_large"></div>
       </div>
       <div class="f12_line"></div>
+
+      {% endif %}
       <div class="f12_footer_legal">
         <div class="f12_legal_left">
           <div class="f12_copywrite_text">©2020 WhizzKid.io. All rights reserved.</div>
         </div>
         <div class="f12_social_wraps">
-          <a href="#" class="f12_social_wrap w-inline-block"><img src="https://uploads-ssl.webflow.com/5d6e88695eb1784af52f878a/5d6e88695eb17827722f8a20_forest_facebook.svg" alt="" class="f12_social_icon"></a>
-          <a href="#" class="f12_social_wrap f12_centre_social w-inline-block"><img src="https://uploads-ssl.webflow.com/5d6e88695eb1784af52f878a/5d6e88695eb178baea2f8a22_forest_twitter.svg" alt="" class="f12_social_icon"></a>
-          <a href="#" class="f12_social_wrap w-inline-block"><img src="https://uploads-ssl.webflow.com/5d6e88695eb1784af52f878a/5d6e88695eb17818c62f8a21_forest_linkedin.svg" alt="" class="f12_social_icon"></a>
+          <a href="#" class="f12_social_wrap w-inline-block"><i class="fa fa-facebook"></i></a>
+          <a href="#" class="f12_social_wrap f12_centre_social w-inline-block"><i class="fa fa-twitter"></i></a>
+          <a href="#" class="f12_social_wrap w-inline-block"><i class="fa fa-instagram"></i></a>
         </div>
       </div>
     </div>
@@ -238,62 +100,9 @@
   "name": "Footer",
   "class": "shopify-section--footer",
   "settings": [
-    {
-      "type": "checkbox",
-      "id": "show_payment_methods",
-      "label": "Show payment methods",
-      "info": "Payment method icons are automatically displayed based on your Shopify payment methods.",
-      "default": true
-    },
-    {
-      "type": "header",
-      "content": "Currency selector",
-      "info": "To add a currency, go to your [payment settings.](/admin/settings/payments)"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_currency_selector",
-      "label": "Show currency selector",
-      "default": true
-    },
-    {
-      "type": "header",
-      "content": "Language selector",
-      "info": "To add a language, go to your [language settings.](/admin/settings/languages)"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_locale_selector",
-      "label": "Show language selector",
-      "default": true
-    }
+    
   ],
   "blocks": [
-    {
-      "type": "text",
-      "name": "Text / social media",
-      "settings": [
-        {
-          "type": "text",
-          "id": "title",
-          "label": "Heading",
-          "default": "About the shop"
-        },
-        {
-          "type": "richtext",
-          "id": "content",
-          "label": "Text",
-          "default": "<p>Use this text area to tell your customers about your brand and vision. You can change it in the theme settings.</p>"
-        },
-        {
-          "type": "checkbox",
-          "id": "show_social_media",
-          "label": "Show social media",
-          "info": "Make sure to have properly configured your social media in the theme settings.",
-          "default": true
-        }
-      ]
-    },
     {
       "type": "links",
       "name": "Links",
@@ -303,6 +112,12 @@
           "id": "menu",
           "label": "Menu",
           "info": "This menu won't show dropdown items."
+        },
+        {
+          "type": "text",
+          "id": "menu_title",
+          "label": "Menu Title",
+          "info": "Custom Menu Title"
         }
       ]
     },
@@ -332,10 +147,6 @@
   ],
   "default": {
     "blocks": [
-      {
-        "type": "text",
-        "settings": {}
-      },
       {
         "type": "links",
         "settings": {
