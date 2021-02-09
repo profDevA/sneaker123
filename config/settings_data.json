@@ -85,38 +85,42 @@
       "footer": {
         "type": "footer",
         "blocks": {
-          "footer-0": {
-            "type": "text",
+          "footer-2": {
+            "type": "newsletter",
             "settings": {
-              "title": "About the shop",
-              "content": "<p>Use this text area to tell your customers about your brand and vision. You can change it in the theme settings.<\/p>",
-              "show_social_media": true
+              "title": "Subscribe to updates",
+              "content": "<p>Stay on top of the latest sneaker releases.<\/p>"
+            }
+          },
+          "dcd91803-c0bf-4f3f-b9d2-5090ca5808c3": {
+            "type": "links",
+            "settings": {
+              "menu": "main-menu",
+              "menu_title": "Popular"
             }
           },
           "footer-1": {
             "type": "links",
             "settings": {
-              "menu": "footer"
+              "menu": "products",
+              "menu_title": ""
             }
           },
-          "footer-2": {
-            "type": "newsletter",
+          "f6559afd-9d85-4ec0-9667-de964cd2a47f": {
+            "type": "links",
             "settings": {
-              "title": "Newsletter",
-              "content": "<p>Subscribe to receive updates, access to exclusive deals, and more.<\/p>"
+              "menu": "resources",
+              "menu_title": ""
             }
           }
         },
         "block_order": [
-          "footer-0",
+          "footer-2",
+          "dcd91803-c0bf-4f3f-b9d2-5090ca5808c3",
           "footer-1",
-          "footer-2"
+          "f6559afd-9d85-4ec0-9667-de964cd2a47f"
         ],
-        "settings": {
-          "show_payment_methods": true,
-          "show_currency_selector": true,
-          "show_locale_selector": true
-        }
+        "settings": {}
       },
       "slideshow": {
         "type": "slideshow",
@@ -481,6 +485,58 @@
       },
       "16116773652bc3c2aa": {
         "type": "custom-home-collections",
+        "blocks": {
+          "828bb62b-af28-4285-bab7-abf0e83a2a83": {
+            "type": "collection",
+            "settings": {
+              "collection": "nike",
+              "title": ""
+            }
+          },
+          "8a56e551-9f92-4755-b602-d0073423d90f": {
+            "type": "collection",
+            "settings": {
+              "collection": "asics",
+              "title": ""
+            }
+          },
+          "e468dee1-8267-4648-9557-85efb3fedd0a": {
+            "type": "collection",
+            "settings": {
+              "collection": "puma",
+              "title": ""
+            }
+          },
+          "bc112788-8893-4ad0-ba06-21ec3d5705a3": {
+            "type": "collection",
+            "settings": {
+              "collection": "rebooks",
+              "title": ""
+            }
+          },
+          "feb69301-0a7c-40b0-92c5-e8ed7a128626": {
+            "type": "collection",
+            "settings": {
+              "collection": "adidas",
+              "title": ""
+            }
+          },
+          "ce79bb8c-7aee-4d17-ad55-d1a183dda1bd": {
+            "type": "collection",
+            "settings": {
+              "collection": "vans",
+              "title": ""
+            }
+          }
+        },
+        "block_order": [
+          "828bb62b-af28-4285-bab7-abf0e83a2a83",
+          "8a56e551-9f92-4755-b602-d0073423d90f",
+          "e468dee1-8267-4648-9557-85efb3fedd0a",
+          "bc112788-8893-4ad0-ba06-21ec3d5705a3",
+          "feb69301-0a7c-40b0-92c5-e8ed7a128626",
+          "ce79bb8c-7aee-4d17-ad55-d1a183dda1bd"
+        ],
         "settings": {}
       },
       "cart-template": {

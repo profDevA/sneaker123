@@ -5,7 +5,7 @@
       {% assign collection_image = block.settings.image | default: collection.image | default: collection.products.first.featured_image %}
 
       <div class="collection-item">
-        <a href="{{ block.settings.link }}" class="collection-link">
+        <a href="{{ block.settings.link | default: collection.url }}" class="collection-link">
           <img src="{{ collection_image | img_url: 'master' }}" alt="" class="collection-image">
           <h3 class="collection-title">{{ block.settings.title | default: collection.title }}</h3>
         </a>

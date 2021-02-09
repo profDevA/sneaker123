@@ -403,10 +403,6 @@ HEADER CONTENT
               </li>
             {%- endif -%}
 
-            {% comment %} <li class="HorizontalList__Item">
-              <a href="{{ routes.search_url }}" class="Heading Link Link--primary Text--subdued u-h8" data-action="toggle-search">{{ 'header.navigation.search' | t }}</a>
-            </li> {% endcomment %}
-
             <li class="HorizontalList__Item">
               <form action="/search" class="search w-form"><input type="search" maxlength="256" name="q" placeholder="Your next sneaker..." required="" class="search-input w-input"><input type="submit" value=" " class="search-button w-button"></form>
             </li>
@@ -416,10 +412,6 @@ HEADER CONTENT
                 My Wishlist
               </a>
             </li>
-
-            {% comment %} <li class="HorizontalList__Item">
-              <a href="{{ routes.cart_url }}" class="Heading u-h6" {% unless template == 'cart' or settings.cart_type == 'page' %}data-action="open-drawer" data-drawer-id="sidebar-cart" aria-label="{{ 'header.navigation.open_cart' | t }}"{% endunless %}>{{ 'header.navigation.cart' | t }} (<span class="Header__CartCount">{{ cart.item_count }}</span>)</a>
-            </li> {% endcomment %}
           </ul>
         </nav>
       {%- elsif localization_form != blank -%}
@@ -442,11 +434,9 @@ HEADER CONTENT
         <span class="hidden-tablet-and-up">{%- render 'icon' with 'search' -%}</span>
         <span class="hidden-phone">{%- render 'icon' with 'search-desktop' -%}</span>
       </a>
-
-      <a href="{{ routes.cart_url }}" class="Header__Icon Icon-Wrapper Icon-Wrapper--clickable {% unless section.settings.show_icons or use_sidebar_menu %}hidden-desk{% endunless %}" {% if settings.cart_type == 'drawer' %}data-action="open-drawer" data-drawer-id="sidebar-cart" aria-expanded="false" aria-label="{{ 'header.navigation.open_cart' | t }}"{% endif %}>
-        <span class="hidden-tablet-and-up">{%- render 'icon' with 'cart' -%}</span>
-        <span class="hidden-phone">{%- render 'icon' with 'cart-desktop' -%}</span>
-        <span class="Header__CartDot {% if cart.item_count > 0 %}is-visible{% endif %}"></span>
+     
+      <a href="/pages/my-wishlist" class="Header__Icon Icon-Wrapper Icon-Wrapper--clickable wishlist-icon {% unless section.settings.show_icons or use_sidebar_menu %}hidden-desk{% endunless %}">
+        <i class="fa fa-heart"></i>
       </a>
     </div>
   </div>

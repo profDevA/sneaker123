@@ -64,7 +64,10 @@ COLLECTION INFO
 
 		<div class="Container">
 		<div class="SectionHeader SectionHeader--center">
-			<h1 class="SectionHeader__Heading Heading u-h1 boost-pfs-filter-collection-header">🔥{{ collection.title }}</h1>
+			<h1 class="SectionHeader__Heading Heading u-h1 boost-pfs-filter-collection-header">
+				<img src="{{collection.image | img_url: 'master'}}" alt="">
+				{{ collection.title }}
+			</h1>
 
 			{%- if collection.description != blank -%}
 			<div class="SectionHeader__Description Rte boost-pfs-filter-collection-description">
@@ -79,7 +82,10 @@ COLLECTION INFO
 	<header class="PageHeader">
 		<div class="Container">
 		<div class="SectionHeader SectionHeader--center">
-			<h1 class="SectionHeader__Heading Heading u-h1 boost-pfs-filter-collection-header">🔥{{ collection.title }}</h1>
+			<h1 class="SectionHeader__Heading Heading u-h1 boost-pfs-filter-collection-header">
+				<img src="{{collection.image | img_url: 'master'}}" alt="">
+				{{ collection.title }}
+			</h1>
 
 			{%- if collection.description != blank -%}
 			<div class="SectionHeader__Description Rte">

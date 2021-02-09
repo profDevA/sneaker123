@@ -70,7 +70,7 @@
     "general": {
       "title": "Search",
       "content": "Enter a word to search our products:",
-      "input_placeholder": "Search...",
+      "input_placeholder": "Your next sneaker ....",
       "view_all": "View all",
       "no_results": "No results could be found",
       "no_results_with_terms": "No results could be found for {{terms}}",
@@ -419,6 +419,9 @@
   "shopify": {
     "links": {
       "powered_by_shopify": " "
+    },
+    "page_titles": {
+      "search": "Your next sneaker ...."
     }
   }
 }
